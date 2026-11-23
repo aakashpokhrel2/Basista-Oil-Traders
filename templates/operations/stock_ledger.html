@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+{% load i18n nepali_tags %}
+
+{% block title %}{% trans "Auditable Stock Movement Ledger" %} | {{ station_name }}{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900">{% trans "Auditable Stock Movement Ledger" %}</h1>
+            <p class="text-sm text-slate-500">
+                {% trans "Immutable audit ledger of every litre entering or leaving storage tanks (sales, receipts, testing returns, and adjustments)." %}
+            </p>
+        </div>
+        {% if user.is_owner or user.is_manager %}
+            <div class="flex items-center gap-2">
+                <a href="{% url 'operations:stock_adjustment_create' %}" class="btn btn-primary text-xs">
+                    <span>⚖️</span>
+                    <span>{% trans "Record Stock Adjustment" %}</span>
+                </a>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Double-Entry Audit Notice -->
+    <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-900 flex items-start gap-3 shadow-sm">
+        <span class="text-xl">🛡️</span>
+        <div>
+            <span class="font-bold block text-sm">{% trans "Financial & Stock Ledger Integrity Guarantee" %}</span>
+            <p class="mt-0.5 text-emerald-800">
+                {% trans "Direct manual overwrites of fuel balances are strictly prohibited by system architecture. Every change in tank volume is recorded with an atomic row-lock and linked to an authorized user and reference document." %}
+            </p>
+        </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+        <form method="GET" class="flex flex-wrap items-center gap-3">
+            <div class="flex-1 min-w-[180px]">
+                <label class="block text-[11px] font-semibold text-slate-500 mb-1">{% trans "Filter by Storage Tank" %}</label>
+                <select name="tank" class="form-select text-xs py-1.5 w-full">
+                    <option value="">{% trans "All Storage Tanks" %}</option>
+                    {% for t in tanks %}
+                        <option value="{{ t.pk }}" {% if selected_tank == t.pk|stringformat:"s" %}selected{% endif %}>
+                            {{ t.tank_name }} ({{ t.tank_number }}) - {{ t.fuel_type.code }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="flex-1 min-w-[180px]">
+                <label class="block text-[11px] font-semibold text-slate-500 mb-1">{% trans "Movement Type" %}</label>
+                <select name="type" class="form-select text-xs py-1.5 w-full">
+                    <option value="">{% trans "All Movement Types" %}</option>
+                    {% for val, label in movement_types %}
+                        <option value="{{ val }}" {% if selected_type == val %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="self-end flex gap-2">
+                <button type="submit" class="btn btn-secondary text-xs py-1.5 px-4">
+                    <span>🔍</span>
+                    <span>{% trans "Filter" %}</span>
+                </button>
+                {% if selected_tank or selected_type %}
+                    <a href="{% url 'operations:stock_ledger' %}" class="btn btn-secondary text-xs py-1.5 px-3">
+                        {% trans "Reset" %}
+                    </a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+
+    <!-- Ledger Table -->
+    <div class="table-container">
+        <table class="table-base">
+            <thead class="table-header">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">{% trans "Timestamp (AD / BS)" %}</th>
+                    <th scope="col">{% trans "Tank / Fuel" %}</th>
+                    <th scope="col">{% trans "Movement Type" %}</th>
+                    <th scope="col" class="text-right">{% trans "Quantity (L)" %}</th>
+                    <th scope="col" class="text-right">{% trans "Before (L)" %}</th>
+                    <th scope="col" class="text-right">{% trans "After (L)" %}</th>
+                    <th scope="col">{% trans "Reference / Details" %}</th>
+                    <th scope="col">{% trans "Performed By" %}</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                {% for m in movements %}
+                    <tr class="hover:bg-slate-50/80 transition-colors">
+                        <td class="table-cell font-mono text-xs text-slate-400">{{ m.pk }}</td>
+                        <td class="table-cell whitespace-nowrap">
+                            <span class="font-medium text-slate-900 block text-xs">{{ m.timestamp|date:"Y-m-d H:i" }}</span>
+                            <span class="text-[11px] text-emerald-700 font-medium block">{{ m.timestamp|ad_to_bs_nepali }}</span>
+                        </td>
+                        <td class="table-cell">
+                            <span class="font-bold text-slate-900 block text-xs">{{ m.tank.tank_name }}</span>
+                            <span class="text-[11px] text-slate-500 font-mono">{{ m.tank.tank_number }} &bull; {{ m.tank.fuel_type.code }}</span>
+                        </td>
+                        <td class="table-cell">
+                            {% if m.movement_type == 'SALE' %}
+                                <span class="badge badge-danger">{% trans "Sale Outflow" %}</span>
+                            {% elif m.movement_type == 'PURCHASE' %}
+                                <span class="badge badge-success">{% trans "Purchase Inflow" %}</span>
+                            {% elif m.movement_type == 'TESTING_RETURN' %}
+                                <span class="badge badge-info">{% trans "Testing Return" %}</span>
+                            {% elif m.movement_type == 'SALE_REVERSAL' %}
+                                <span class="badge badge-warning">{% trans "Sale Reversal" %}</span>
+                            {% elif m.movement_type == 'OPENING' %}
+                                <span class="badge badge-primary">{% trans "Opening Stock" %}</span>
+                            {% else %}
+                                <span class="badge badge-secondary">{{ m.get_movement_type_display }}</span>
+                            {% endif %}
+                        </td>
+                        <td class="table-cell text-right font-mono font-bold text-xs whitespace-nowrap">
+                            {% if m.direction == 'IN' %}
+                                <span class="text-emerald-700">+{{ m.quantity }} L</span>
+                            {% else %}
+                                <span class="text-red-700">-{{ m.quantity }} L</span>
+                            {% endif %}
+                        </td>
+                        <td class="table-cell text-right font-mono text-xs text-slate-600">
+                            {{ m.opening_balance }} L
+                        </td>
+                        <td class="table-cell text-right font-mono font-bold text-xs text-slate-900">
+                            {{ m.closing_balance }} L
+                        </td>
+                        <td class="table-cell text-xs max-w-xs truncate">
+                            {% if m.reference_type and m.reference_id %}
+                                <span class="font-mono text-slate-700 font-medium block">
+                                    {{ m.reference_type }} #{{ m.reference_id }}
+                                </span>
+                            {% endif %}
+                            {% if m.remarks %}
+                                <span class="text-slate-500 text-[11px] block truncate" title="{{ m.remarks }}">
+                                    {{ m.remarks }}
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="table-cell text-xs text-slate-600">
+                            {{ m.performed_by.get_full_name|default:m.performed_by.username|default:"System" }}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="9" class="p-8 text-center text-slate-500 text-sm">
+                            <p class="text-2xl mb-2">📜</p>
+                            <p>{% trans "No stock movements recorded in the ledger matching your criteria." %}</p>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+        <div class="flex items-center justify-between text-xs text-slate-500 py-3">
+            <div>
+                {% trans "Page" %} {{ page_obj.number }} {% trans "of" %} {{ page_obj.paginator.num_pages }} ({{ paginator.count }} {% trans "entries" %})
+            </div>
+            <div class="flex gap-1">
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}&tank={{ selected_tank }}&type={{ selected_type }}" class="btn btn-secondary text-xs px-2.5 py-1">
+                        {% trans "Previous" %}
+                    </a>
+                {% endif %}
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}&tank={{ selected_tank }}&type={{ selected_type }}" class="btn btn-secondary text-xs px-2.5 py-1">
+                        {% trans "Next" %}
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

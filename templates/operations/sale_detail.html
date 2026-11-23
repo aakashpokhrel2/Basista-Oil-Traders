@@ -1,0 +1,248 @@
+{% extends 'base.html' %}
+{% load i18n nepali_tags %}
+
+{% block title %}{% trans "Tax Invoice" %} {{ sale.invoice_number }} | {{ station_name }}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-6">
+    <!-- Action Bar (hidden when printing) -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 print:hidden">
+        <div class="flex items-center gap-2">
+            <a href="{% url 'operations:sales_register' %}" class="btn btn-secondary text-xs">
+                <span>←</span>
+                <span>{% trans "Back to Sales Register" %}</span>
+            </a>
+            {% if sale.shift %}
+                <a href="{% url 'operations:shift_detail' pk=sale.shift.pk %}" class="btn btn-secondary text-xs">
+                    <span>{% trans "View Shift" %} ({{ sale.shift.shift_number }})</span>
+                </a>
+            {% endif %}
+        </div>
+        <div class="flex items-center gap-2">
+            <button onclick="window.print()" class="btn btn-primary text-xs">
+                <span>🖨️</span>
+                <span>{% trans "Print Invoice" %}</span>
+            </button>
+            {% if not sale.is_cancelled and user.is_owner or not sale.is_cancelled and user.is_manager %}
+                <a href="{% url 'operations:sale_cancel' pk=sale.pk %}" class="btn btn-danger text-xs">
+                    <span>⚠️</span>
+                    <span>{% trans "Void / Cancel Sale" %}</span>
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Cancellation Banner -->
+    {% if sale.is_cancelled %}
+        <div class="p-4 bg-red-50 border-2 border-red-300 rounded-xl text-red-900 flex items-start gap-3 shadow-sm">
+            <span class="text-2xl">🚫</span>
+            <div>
+                <h3 class="font-bold text-base">{% trans "THIS INVOICE HAS BEEN VOIDED / CANCELLED" %}</h3>
+                <p class="text-xs text-red-700 mt-1">
+                    {% trans "Cancelled on" %}: <strong>{{ sale.cancelled_at|date:"Y-m-d H:i" }}</strong> 
+                    ({% trans "BS" %}: <strong>{{ sale.cancelled_at|ad_to_bs_nepali }}</strong>) 
+                    {% trans "by" %} <strong>{{ sale.cancelled_by.get_full_name|default:sale.cancelled_by.username }}</strong>
+                </p>
+                <p class="text-xs text-red-800 font-medium mt-1">
+                    {% trans "Cancellation Reason" %}: <em>{{ sale.cancellation_reason }}</em>
+                </p>
+                <p class="text-[11px] text-red-600 mt-1">
+                    {% trans "Fuel stock of" %} {{ sale.quantity }} L {% trans "was automatically reversed back into" %} {{ sale.tank.tank_name }}.
+                </p>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Printable Bill Receipt / Tax Invoice Container -->
+    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm p-8 print:p-0 print:border-none print:shadow-none relative">
+        {% if sale.is_cancelled %}
+            <!-- Watermark for print/screen -->
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-10">
+                <span class="text-7xl font-black text-red-600 transform -rotate-45 uppercase tracking-widest">
+                    CANCELLED
+                </span>
+            </div>
+        {% endif %}
+
+        <!-- Header -->
+        <div class="border-b border-slate-200 pb-6 mb-6">
+            <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-2xl">⛽</span>
+                        <h1 class="text-xl font-black text-slate-900 tracking-tight">{{ station_name }}</h1>
+                    </div>
+                    {% if station.address %}
+                        <p class="text-xs text-slate-600 mt-1">{{ station.address }}</p>
+                    {% endif %}
+                    <div class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500 mt-1.5">
+                        {% if station.pan_vat_number %}
+                            <span><strong>{% trans "PAN / VAT" %}:</strong> {{ station.pan_vat_number }}</span>
+                        {% endif %}
+                        {% if station.phone_number %}
+                            <span><strong>{% trans "Tel" %}:</strong> {{ station.phone_number }}</span>
+                        {% endif %}
+                        {% if station.email %}
+                            <span><strong>{% trans "Email" %}:</strong> {{ station.email }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="text-left sm:text-right bg-slate-50 p-3 rounded-xl border border-slate-200 sm:bg-transparent sm:p-0 sm:border-none">
+                    <span class="inline-block px-2.5 py-1 text-xs font-bold rounded-lg {% if sale.is_cancelled %}bg-red-100 text-red-800{% else %}bg-emerald-100 text-emerald-800{% endif %} uppercase tracking-wide">
+                        {% if sale.is_cancelled %}{% trans "Void Invoice" %}{% else %}{% trans "Tax Invoice" %}{% endif %}
+                    </span>
+                    <p class="text-base font-extrabold text-slate-900 mt-1 font-mono">{{ sale.invoice_number }}</p>
+                    <p class="text-xs text-slate-500 mt-0.5">
+                        {% trans "Date (AD)" %}: {{ sale.transaction_date|date:"Y-m-d H:i" }}
+                    </p>
+                    <p class="text-xs font-medium text-emerald-700">
+                        {% trans "Date (BS)" %}: {{ sale.transaction_date|ad_to_bs_nepali }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Invoice Details Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 pb-6 border-b border-slate-200 text-xs">
+            <!-- Customer & Vehicle Info -->
+            <div class="space-y-2">
+                <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">{% trans "Customer & Vehicle Information" %}</span>
+                <div class="flex justify-between py-1 border-b border-slate-100">
+                    <span class="text-slate-500">{% trans "Customer Name" %}:</span>
+                    <span class="font-semibold text-slate-900">{{ sale.customer_name|default:"Cash Customer / Retail" }}</span>
+                </div>
+                <div class="flex justify-between py-1 border-b border-slate-100">
+                    <span class="text-slate-500">{% trans "Vehicle Number" %}:</span>
+                    <span class="font-semibold text-slate-900">{{ sale.vehicle_number|default:"-" }}</span>
+                </div>
+                <div class="flex justify-between py-1">
+                    <span class="text-slate-500">{% trans "Sale Type" %}:</span>
+                    <span class="font-semibold text-slate-900">
+                        {% if sale.sale_type == 'METER' %}
+                            <span class="text-emerald-700">📟 {% trans "Meter-based Dispense" %}</span>
+                        {% else %}
+                            <span class="text-amber-700">📝 {% trans "Manual Entry" %}</span>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Transaction & Dispense Details -->
+            <div class="space-y-2">
+                <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">{% trans "Transaction & Dispense Context" %}</span>
+                <div class="flex justify-between py-1 border-b border-slate-100">
+                    <span class="text-slate-500">{% trans "Payment Method" %}:</span>
+                    <span class="font-semibold text-slate-900">
+                        <span class="badge {% if sale.payment_method == 'CASH' %}badge-success{% elif sale.payment_method == 'CREDIT' %}badge-warning{% else %}badge-info{% endif %}">
+                            {{ sale.get_payment_method_display }}
+                        </span>
+                    </span>
+                </div>
+                <div class="flex justify-between py-1 border-b border-slate-100">
+                    <span class="text-slate-500">{% trans "Shift" %}:</span>
+                    <span class="font-semibold text-slate-900">
+                        {% if sale.shift %}{{ sale.shift.shift_number }} ({{ sale.shift.schedule.name }}){% else %}-{% endif %}
+                    </span>
+                </div>
+                <div class="flex justify-between py-1 border-b border-slate-100">
+                    <span class="text-slate-500">{% trans "Dispenser / Nozzle" %}:</span>
+                    <span class="font-semibold text-slate-900">
+                        {% if sale.nozzle %}{{ sale.nozzle.pump.pump_name }} - {{ sale.nozzle.nozzle_code }}{% else %}-{% endif %}
+                    </span>
+                </div>
+                <div class="flex justify-between py-1">
+                    <span class="text-slate-500">{% trans "Storage Tank" %}:</span>
+                    <span class="font-semibold text-slate-900">{{ sale.tank.tank_name }} ({{ sale.tank.tank_number }})</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Line Item Table -->
+        <div class="py-6 border-b border-slate-200">
+            <table class="w-full text-xs">
+                <thead>
+                    <tr class="border-b border-slate-200 text-slate-500 text-[11px] uppercase tracking-wider font-semibold">
+                        <th class="text-left py-2">{% trans "SN" %}</th>
+                        <th class="text-left py-2">{% trans "Product / Description" %}</th>
+                        <th class="text-right py-2">{% trans "Quantity" %}</th>
+                        <th class="text-right py-2">{% trans "Rate (NPR/L)" %}</th>
+                        <th class="text-right py-2">{% trans "Total Amount (NPR)" %}</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    <tr>
+                        <td class="py-3 text-slate-400">1</td>
+                        <td class="py-3">
+                            <span class="font-bold text-slate-900">{{ sale.fuel_type.name_en }}</span>
+                            <span class="text-slate-500 block text-[11px]">
+                                {{ sale.fuel_type.name_ne }} ({{ sale.fuel_type.code }})
+                            </span>
+                        </td>
+                        <td class="py-3 text-right font-mono font-medium text-slate-900">
+                            {{ sale.quantity }} {{ sale.fuel_type.unit|default:"Litres" }}
+                        </td>
+                        <td class="py-3 text-right font-mono text-slate-700">
+                            {{ sale.unit_price|currency_npr }}
+                        </td>
+                        <td class="py-3 text-right font-mono font-bold text-slate-900">
+                            {{ sale.total_amount|currency_npr }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Totals & Payment Summary -->
+        <div class="py-4 flex justify-end">
+            <div class="w-full sm:w-1/2 space-y-2 text-xs">
+                <div class="flex justify-between text-slate-600">
+                    <span>{% trans "Subtotal" %}:</span>
+                    <span class="font-mono font-semibold">{{ sale.total_amount|currency_npr }}</span>
+                </div>
+                <div class="flex justify-between text-slate-600">
+                    <span>{% trans "Tax (Included)" %}:</span>
+                    <span class="font-mono">Rs. 0.00</span>
+                </div>
+                <div class="flex justify-between py-2 border-t border-b border-slate-300 text-sm font-bold text-slate-900">
+                    <span>{% trans "Grand Total" %}:</span>
+                    <span class="font-mono text-emerald-800 text-base">{{ sale.total_amount|currency_npr }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Manual Sale Justification / Remarks -->
+        {% if sale.is_manual and sale.reason_for_manual %}
+            <div class="mt-4 p-3 bg-amber-50 rounded-xl border border-amber-200 text-xs text-amber-900">
+                <span class="font-bold block">{% trans "Manual Sale Justification & Authorization" %}:</span>
+                <p class="mt-0.5">{{ sale.reason_for_manual }}</p>
+                {% if sale.authorized_by %}
+                    <span class="text-[11px] text-amber-700 block mt-1">
+                        {% trans "Authorized by" %}: {{ sale.authorized_by.get_full_name|default:sale.authorized_by.username }}
+                    </span>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        <!-- Footer & Signatures -->
+        <div class="mt-12 pt-8 border-t border-slate-200 grid grid-cols-2 gap-8 text-xs text-center text-slate-500">
+            <div>
+                <div class="h-10"></div>
+                <p class="border-t border-slate-300 pt-2 font-medium">
+                    {% trans "Recorded By" %}: {{ sale.recorded_by.get_full_name|default:sale.recorded_by.username }}
+                </p>
+            </div>
+            <div>
+                <div class="h-10"></div>
+                <p class="border-t border-slate-300 pt-2 font-medium">
+                    {% trans "Authorized Signature / Seal" %}
+                </p>
+            </div>
+        </div>
+
+        <p class="text-center text-[10px] text-slate-400 mt-6 print:block">
+            {% trans "Thank you for visiting Basista Oil Traders! Fueling your journey safely." %}
+        </p>
+    </div>
+</div>
+{% endblock %}

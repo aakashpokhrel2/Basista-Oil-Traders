@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load i18n nepali_tags %}
+
+{% block title %}{% trans "Meter Readings Log" %} | {{ station_name }}{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900">{% trans "Nozzle Meter Readings Audit Log" %}</h1>
+            <p class="text-sm text-slate-500">
+                {% trans "Continuous historical log of opening and closing meter readings across all station nozzles." %}
+            </p>
+        </div>
+        <div class="flex items-center gap-2">
+            {% if active_shift %}
+                <a href="{% url 'operations:meter_reading_create' %}" class="btn btn-primary">
+                    <span>➕</span>
+                    <span>{% trans "Log Meter Reading" %}</span>
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Filters Bar -->
+    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+        <form method="GET" class="flex flex-col sm:flex-row gap-3">
+            <div class="flex-1">
+                <input type="text" name="shift" value="{{ request.GET.shift }}" placeholder="{% trans 'Search by Shift Number...' %}" class="form-input text-xs py-1.5">
+            </div>
+            <div>
+                <select name="nozzle" class="form-select text-xs py-1.5">
+                    <option value="">{% trans "All Nozzles" %}</option>
+                    {% for n in nozzles %}
+                        <option value="{{ n.id }}" {% if request.GET.nozzle == n.id|stringformat:"s" %}selected{% endif %}>
+                            {{ n.nozzle_code }} ({{ n.fuel_type.code }})
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-secondary text-xs py-1.5 px-4">
+                {% trans "Filter" %}
+            </button>
+        </form>
+    </div>
+
+    <!-- Readings Table -->
+    <div class="table-container">
+        <table class="table-base">
+            <thead class="table-header">
+                <tr>
+                    <th scope="col">{% trans "Reading Time" %}</th>
+                    <th scope="col">{% trans "Shift" %}</th>
+                    <th scope="col">{% trans "Nozzle / Pump" %}</th>
+                    <th scope="col">{% trans "Fuel" %}</th>
+                    <th scope="col">{% trans "Opening Meter" %}</th>
+                    <th scope="col">{% trans "Closing Meter" %}</th>
+                    <th scope="col">{% trans "Gross Sold" %}</th>
+                    <th scope="col">{% trans "Test Return" %}</th>
+                    <th scope="col">{% trans "Net Sold" %}</th>
+                    <th scope="col" class="text-right">{% trans "Sales Value" %}</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                {% for r in readings %}
+                    <tr class="table-row">
+                        <td class="table-cell text-xs">
+                            <span class="font-medium text-slate-900 block">{{ r.reading_timestamp|date:"Y-m-d H:i" }}</span>
+                            <span class="text-slate-400 font-mono text-[11px]">{{ r.reading_timestamp|to_bs:"friendly" }}</span>
+                        </td>
+                        <td class="table-cell font-mono text-xs font-semibold">
+                            <a href="{% url 'operations:shift_detail' r.shift.pk %}" class="text-emerald-700 hover:underline">
+                                {{ r.shift.shift_number }}
+                            </a>
+                        </td>
+                        <td class="table-cell">
+                            <span class="font-mono font-bold text-slate-900 block">{{ r.nozzle.nozzle_code }}</span>
+                            <span class="text-xs text-slate-500">{{ r.nozzle.pump.pump_name }}</span>
+                        </td>
+                        <td class="table-cell">
+                            <span class="badge {{ r.nozzle.fuel_type.badge_class }}">
+                                {{ r.nozzle.fuel_type.code }}
+                            </span>
+                        </td>
+                        <td class="table-cell font-mono text-slate-600">{{ r.opening_meter_reading }} L</td>
+                        <td class="table-cell font-mono font-bold text-slate-900">{{ r.closing_meter_reading }} L</td>
+                        <td class="table-cell font-mono text-slate-700">{{ r.quantity_sold }} L</td>
+                        <td class="table-cell font-mono text-amber-700">
+                            {% if r.test_dispense_quantity > 0 %}-{{ r.test_dispense_quantity }} L{% else %}-{% endif %}
+                        </td>
+                        <td class="table-cell font-mono font-bold text-emerald-800">{{ r.net_quantity_sold }} L</td>
+                        <td class="table-cell font-mono font-bold text-slate-900 text-right">
+                            {{ r.total_amount|currency_npr }}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="10" class="py-8 text-center text-slate-400 text-sm">
+                            {% trans "No meter reading logs found." %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

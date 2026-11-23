@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load i18n nepali_tags %}
+
+{% block title %}{% trans "Daily Sales Register" %} | {{ station_name }}{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900">{% trans "Daily Fuel Sales Register" %}</h1>
+            <p class="text-sm text-slate-500">
+                {% trans "Auditable daily fuel sales invoices across Petrol (MS) and Diesel (HSD), cash and credit transactions." %}
+            </p>
+        </div>
+        <div class="flex items-center gap-2">
+            <a href="{% url 'operations:manual_sale_create' %}" class="btn btn-primary">
+                <span>➕</span>
+                <span>{% trans "Record Manual Sale" %}</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Summary Metrics Strip -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div class="stat-card">
+            <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">{% trans "Filtered Sales Revenue" %}</span>
+            <p class="text-2xl font-bold text-emerald-800 mt-1">{{ totals.total_rev|default:"0.00"|currency_npr }}</p>
+            <span class="text-xs text-slate-500 mt-1 block">{{ totals.total_liters|default:"0" }} Litres sold</span>
+        </div>
+        <div class="stat-card">
+            <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">{% trans "Cash Sales" %}</span>
+            <p class="text-xl font-bold text-slate-900 mt-1">{{ totals.cash_total|default:"0.00"|currency_npr }}</p>
+        </div>
+        <div class="stat-card">
+            <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">{% trans "Credit Sales" %}</span>
+            <p class="text-xl font-bold text-amber-800 mt-1">{{ totals.credit_total|default:"0.00"|currency_npr }}</p>
+        </div>
+        <div class="stat-card">
+            <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">{% trans "Bank / QR Digital" %}</span>
+            <p class="text-xl font-bold text-blue-800 mt-1">{{ totals.bank_total|default:"0.00"|currency_npr }}</p>
+        </div>
+    </div>
+
+    <!-- Filter & Search Bar -->
+    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+        <form method="GET" class="grid grid-cols-1 sm:grid-cols-5 gap-3">
+            <div>
+                <input type="text" name="q" value="{{ q }}" placeholder="{% trans 'Search bill #, customer, vehicle...' %}" class="form-input text-xs py-1.5">
+            </div>
+            <div>
+                <input type="date" name="date" value="{{ selected_date }}" class="form-input text-xs py-1.5">
+            </div>
+            <div>
+                <select name="fuel" class="form-select text-xs py-1.5">
+                    <option value="">{% trans "All Fuels" %}</option>
+                    {% for f in fuels %}
+                        <option value="{{ f.code }}" {% if selected_fuel == f.code %}selected{% endif %}>{{ f.name_en }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <select name="payment" class="form-select text-xs py-1.5">
+                    <option value="">{% trans "All Payments" %}</option>
+                    <option value="CASH" {% if selected_payment == 'CASH' %}selected{% endif %}>{% trans "Cash" %}</option>
+                    <option value="CREDIT" {% if selected_payment == 'CREDIT' %}selected{% endif %}>{% trans "Credit" %}</option>
+                    <option value="BANK_TRANSFER" {% if selected_payment == 'BANK_TRANSFER' %}selected{% endif %}>{% trans "Bank Transfer" %}</option>
+                    <option value="QR_FONEPAY" {% if selected_payment == 'QR_FONEPAY' %}selected{% endif %}>{% trans "QR / Fonepay" %}</option>
+                </select>
+            </div>
+            <div class="flex gap-2">
+                <select name="type" class="form-select text-xs py-1.5 flex-1">
+                    <option value="">{% trans "All Types" %}</option>
+                    <option value="METER" {% if selected_type == 'METER' %}selected{% endif %}>{% trans "Meter-based" %}</option>
+                    <option value="MANUAL" {% if selected_type == 'MANUAL' %}selected{% endif %}>{% trans "Manual" %}</option>
+                </select>
+                <button type="submit" class="btn btn-secondary text-xs py-1.5 px-3">
+                    {% trans "Filter" %}
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Sales Table -->
+    <div class="table-container">
+        <table class="table-base">
+            <thead class="table-header">
+                <tr>
+                    <th scope="col">{% trans "Invoice #" %}</th>
+                    <th scope="col">{% trans "Date & Time" %}</th>
+                    <th scope="col">{% trans "Type" %}</th>
+                    <th scope="col">{% trans "Fuel" %}</th>
+                    <th scope="col">{% trans "Quantity" %}</th>
+                    <th scope="col">{% trans "Rate" %}</th>
+                    <th scope="col">{% trans "Total Amount" %}</th>
+                    <th scope="col">{% trans "Payment" %}</th>
+                    <th scope="col">{% trans "Customer / Vehicle" %}</th>
+                    <th scope="col" class="text-right">{% trans "Actions" %}</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                {% for s in sales %}
+                    <tr class="table-row {% if s.is_cancelled %}bg-red-50/50 opacity-60 line-through{% endif %}">
+                        <td class="table-cell font-mono font-bold text-slate-900">
+                            <a href="{% url 'operations:sale_detail' s.pk %}" class="hover:underline {% if s.is_cancelled %}text-red-700{% else %}text-emerald-700{% endif %}">
+                                {{ s.invoice_number }}
+                            </a>
+                            {% if s.is_cancelled %}
+                                <span class="badge badge-danger text-[9px] no-underline block mt-0.5">{% trans "VOIDED" %}</span>
+                            {% endif %}
+                        </td>
+                        <td class="table-cell text-xs">
+                            <span class="font-medium text-slate-900 block">{{ s.transaction_date|date:"Y-m-d H:i" }}</span>
+                            <span class="text-slate-400 font-mono text-[11px]">{{ s.transaction_date|to_bs:"friendly" }}</span>
+                        </td>
+                        <td class="table-cell text-xs">
+                            {% if s.is_manual_sale %}
+                                <span class="badge bg-amber-100 text-amber-800 text-[10px]">✍️ {% trans "Manual" %}</span>
+                            {% else %}
+                                <span class="badge bg-slate-100 text-slate-700 text-[10px]">📟 {% trans "Meter" %}</span>
+                            {% endif %}
+                        </td>
+                        <td class="table-cell">
+                            <span class="badge {{ s.fuel_type.badge_class }}">
+                                {{ s.fuel_type.code }}
+                            </span>
+                        </td>
+                        <td class="table-cell font-mono font-bold">{{ s.quantity }} L</td>
+                        <td class="table-cell font-mono text-xs">{{ s.unit_price|currency_npr }}</td>
+                        <td class="table-cell font-mono font-bold text-emerald-800">
+                            {{ s.total_amount|currency_npr }}
+                        </td>
+                        <td class="table-cell text-xs">
+                            <span class="badge bg-slate-100 text-slate-800">{{ s.get_payment_method_display }}</span>
+                        </td>
+                        <td class="table-cell text-xs text-slate-600">
+                            {{ s.customer_name }}{% if s.vehicle_number %} ({{ s.vehicle_number }}){% endif %}
+                        </td>
+                        <td class="table-cell text-right space-x-1">
+                            <a href="{% url 'operations:sale_detail' s.pk %}" class="btn btn-secondary btn-sm">
+                                👁️ {% trans "View" %}
+                            </a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="10" class="py-8 text-center text-slate-400 text-sm">
+                            {% trans "No fuel sales recorded matching criteria." %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

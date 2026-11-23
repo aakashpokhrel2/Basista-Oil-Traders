@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load i18n nepali_tags %}
+
+{% block title %}{{ title }} | {{ station_name }}{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto">
+    <div class="mb-6 flex items-center justify-between">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900">{{ title }}</h1>
+            <p class="text-sm text-slate-500">{% trans "Assign shift supervisor, operators on duty, and opening cash float." %}</p>
+        </div>
+        <a href="{% url 'operations:shift_list' %}" class="btn btn-secondary text-xs">
+            &larr; {% trans "Back to Shifts" %}
+        </a>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+        <form method="POST">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="mb-5 p-3.5 rounded-lg bg-red-50 border border-red-200 text-red-800 text-xs">
+                    {% for error in form.non_field_errors %}
+                        <p>⚠️ {{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="space-y-4">
+                <div class="form-group">
+                    <label class="form-label">{{ form.shift_number.label }}</label>
+                    {{ form.shift_number }}
+                    {% if form.shift_number.errors %}<p class="form-error">{{ form.shift_number.errors.0 }}</p>{% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">{{ form.schedule.label }}</label>
+                    {{ form.schedule }}
+                    {% if form.schedule.errors %}<p class="form-error">{{ form.schedule.errors.0 }}</p>{% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">{{ form.supervisor.label }}</label>
+                    {{ form.supervisor }}
+                    {% if form.supervisor.errors %}<p class="form-error">{{ form.supervisor.errors.0 }}</p>{% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">{{ form.opening_cash_balance.label }}</label>
+                    {{ form.opening_cash_balance }}
+                    {% if form.opening_cash_balance.errors %}<p class="form-error">{{ form.opening_cash_balance.errors.0 }}</p>{% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label mb-2">{{ form.operators.label }}</label>
+                    <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 max-h-48 overflow-y-auto space-y-2">
+                        {% for choice in form.operators %}
+                            <label class="flex items-center gap-2 text-xs font-medium text-slate-800 cursor-pointer">
+                                {{ choice.tag }}
+                                <span>{{ choice.choice_label }}</span>
+                            </label>
+                        {% endfor %}
+                    </div>
+                    {% if form.operators.errors %}<p class="form-error">{{ form.operators.errors.0 }}</p>{% endif %}
+                </div>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-slate-100 flex justify-end gap-3">
+                <a href="{% url 'operations:shift_list' %}" class="btn btn-secondary text-sm">
+                    {% trans "Cancel" %}
+                </a>
+                <button type="submit" class="btn btn-primary text-sm font-semibold">
+                    ⏱️ {% trans "Open Shift Now" %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,232 @@
+{% extends 'base.html' %}
+{% load i18n nepali_tags %}
+
+{% block title %}{% trans "Shift:" %} {{ shift.shift_number }} | {{ station_name }}{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Shift Header Summary -->
+    <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-4 border-b border-slate-100">
+            <div>
+                <div class="flex items-center gap-2 mb-1">
+                    <span class="font-mono text-sm font-bold bg-slate-100 text-slate-800 px-2 py-0.5 rounded">
+                        {{ shift.shift_number }}
+                    </span>
+                    {% if shift.status == 'OPEN' %}
+                        <span class="badge badge-success text-xs">🟢 {% trans "Active / Open" %}</span>
+                    {% elif shift.status == 'CLOSED' %}
+                        <span class="badge bg-amber-100 text-amber-800 text-xs">⏳ {% trans "Closed (Pending Approval)" %}</span>
+                    {% else %}
+                        <span class="badge bg-blue-100 text-blue-800 text-xs">✓ {% trans "Approved & Reconciled" %}</span>
+                    {% endif %}
+                </div>
+                <h1 class="text-2xl font-bold text-slate-900">{{ shift.schedule.name_en }}</h1>
+                <p class="text-xs text-slate-500 mt-1">
+                    📅 {{ shift.date_bs }} BS ({{ shift.date_ad|date:"Y-m-d" }}) &bull;
+                    {% trans "Opened:" %} {{ shift.opening_time|time:"H:i" }}
+                    {% if shift.closing_time %}&bull; {% trans "Closed:" %} {{ shift.closing_time|time:"H:i" }}{% endif %}
+                </p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center gap-2">
+                {% if shift.is_open %}
+                    <a href="{% url 'operations:meter_reading_create' %}" class="btn btn-secondary text-xs">
+                        📟 {% trans "Log Meter Reading" %}
+                    </a>
+                    <a href="{% url 'operations:manual_sale_create' %}" class="btn btn-secondary text-xs">
+                        ✍️ {% trans "Record Manual Sale" %}
+                    </a>
+                    <a href="{% url 'operations:shift_close' shift.pk %}" class="btn btn-danger text-xs font-semibold">
+                        🛑 {% trans "Close Shift" %}
+                    </a>
+                {% elif shift.status == 'CLOSED' and user.is_owner or shift.status == 'CLOSED' and user.is_manager %}
+                    <a href="{% url 'operations:shift_approve' shift.pk %}" class="btn btn-primary text-xs font-semibold">
+                        ✓ {% trans "Approve & Reconcile" %}
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Shift Key Metrics Cards -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-4 text-center">
+            <div class="p-3 rounded-lg bg-slate-50 border border-slate-100">
+                <span class="text-[10px] uppercase text-slate-500 font-semibold block">{% trans "Opening Cash" %}</span>
+                <span class="text-base font-bold text-slate-900 font-mono">{{ shift.opening_cash_balance|currency_npr }}</span>
+            </div>
+            <div class="p-3 rounded-lg bg-emerald-50/60 border border-emerald-100">
+                <span class="text-[10px] uppercase text-emerald-800 font-semibold block">{% trans "Cash Sales Total" %}</span>
+                <span class="text-base font-bold text-emerald-800 font-mono">{{ summary.cash_rev|default:"0.00"|currency_npr }}</span>
+            </div>
+            <div class="p-3 rounded-lg bg-slate-50 border border-slate-100">
+                <span class="text-[10px] uppercase text-slate-500 font-semibold block">{% trans "Credit / Digital Sales" %}</span>
+                <span class="text-base font-bold text-slate-900 font-mono">
+                    {{ summary.credit_rev|default:"0.00"|currency_npr }}
+                </span>
+            </div>
+            <div class="p-3 rounded-lg {% if shift.has_cash_shortage %}bg-red-50 border-red-200{% elif shift.has_cash_excess %}bg-blue-50 border-blue-200{% else %}bg-slate-50 border-slate-100{% endif %}">
+                <span class="text-[10px] uppercase text-slate-500 font-semibold block">{% trans "Cash Variance" %}</span>
+                {% if shift.is_closed %}
+                    <span class="text-base font-bold font-mono {% if shift.has_cash_shortage %}text-red-700{% elif shift.has_cash_excess %}text-blue-700{% else %}text-emerald-700{% endif %}">
+                        {{ shift.cash_difference|currency_npr }}
+                    </span>
+                {% else %}
+                    <span class="text-xs text-slate-400 font-medium">{% trans "Calculated at Close" %}</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert for Unread Nozzles -->
+    {% if shift.is_open and unread_nozzles %}
+        <div class="p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div class="flex items-center gap-2">
+                <span class="text-lg">⚠️</span>
+                <span>
+                    <strong>{% trans "Pending Meter Readings:" %}</strong>
+                    {% trans "The following nozzles have not been logged in this shift yet:" %}
+                    {% for n in unread_nozzles %}<span class="font-mono font-bold">{{ n.nozzle_code }}</span>{% if not forloop.last %}, {% endif %}{% endfor %}
+                </span>
+            </div>
+            <a href="{% url 'operations:meter_reading_create' %}" class="btn btn-primary btn-sm flex-shrink-0">
+                + {% trans "Log Remaining Readings" %}
+            </a>
+        </div>
+    {% endif %}
+
+    <!-- 1. Nozzle Meter Readings Table -->
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
+            <h2 class="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                <span>📟</span>
+                <span>{% trans "Nozzle Meter Readings" %} ({{ readings.count }})</span>
+            </h2>
+            {% if shift.is_open %}
+                <a href="{% url 'operations:meter_reading_create' %}" class="text-xs text-emerald-700 font-semibold hover:underline">
+                    + {% trans "Add Reading" %}
+                </a>
+            {% endif %}
+        </div>
+
+        <div class="table-container border-0 rounded-none shadow-none">
+            <table class="table-base">
+                <thead class="table-header">
+                    <tr>
+                        <th scope="col">{% trans "Nozzle" %}</th>
+                        <th scope="col">{% trans "Fuel" %}</th>
+                        <th scope="col">{% trans "Opening Meter" %}</th>
+                        <th scope="col">{% trans "Closing Meter" %}</th>
+                        <th scope="col">{% trans "Gross Sold" %}</th>
+                        <th scope="col">{% trans "Testing Return" %}</th>
+                        <th scope="col">{% trans "Net Sold (L)" %}</th>
+                        <th scope="col">{% trans "Rate" %}</th>
+                        <th scope="col" class="text-right">{% trans "Total Amount" %}</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    {% for r in readings %}
+                        <tr class="table-row">
+                            <td class="table-cell font-mono font-bold text-slate-900">
+                                {{ r.nozzle.nozzle_code }}
+                            </td>
+                            <td class="table-cell">
+                                <span class="badge {{ r.nozzle.fuel_type.badge_class }}">
+                                    {{ r.nozzle.fuel_type.code }}
+                                </span>
+                            </td>
+                            <td class="table-cell font-mono text-slate-600">{{ r.opening_meter_reading }} L</td>
+                            <td class="table-cell font-mono font-bold text-slate-900">{{ r.closing_meter_reading }} L</td>
+                            <td class="table-cell font-mono text-slate-700">{{ r.quantity_sold }} L</td>
+                            <td class="table-cell font-mono text-amber-700">
+                                {% if r.test_dispense_quantity > 0 %}{{ r.test_dispense_quantity }} L{% else %}-{% endif %}
+                            </td>
+                            <td class="table-cell font-mono font-bold text-emerald-800">{{ r.net_quantity_sold }} L</td>
+                            <td class="table-cell font-mono text-xs">{{ r.unit_price|currency_npr }}</td>
+                            <td class="table-cell font-mono font-bold text-slate-900 text-right">
+                                {{ r.total_amount|currency_npr }}
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="9" class="py-6 text-center text-slate-400 text-xs">
+                                {% trans "No meter readings recorded for this shift yet." %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 2. Shift Sales Register Table -->
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
+            <h2 class="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                <span>🧾</span>
+                <span>{% trans "Sales Invoices in this Shift" %} ({{ total_sales_count }})</span>
+            </h2>
+            <a href="{% url 'operations:sales_register' %}?shift={{ shift.pk }}" class="text-xs text-emerald-700 font-semibold hover:underline">
+                {% trans "View in Daily Sales Register" %} &rarr;
+            </a>
+        </div>
+
+        <div class="table-container border-0 rounded-none shadow-none">
+            <table class="table-base">
+                <thead class="table-header">
+                    <tr>
+                        <th scope="col">{% trans "Invoice #" %}</th>
+                        <th scope="col">{% trans "Type" %}</th>
+                        <th scope="col">{% trans "Fuel" %}</th>
+                        <th scope="col">{% trans "Quantity" %}</th>
+                        <th scope="col">{% trans "Amount" %}</th>
+                        <th scope="col">{% trans "Payment" %}</th>
+                        <th scope="col">{% trans "Customer / Vehicle" %}</th>
+                        <th scope="col" class="text-right">{% trans "Actions" %}</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    {% for sale in sales %}
+                        <tr class="table-row">
+                            <td class="table-cell font-mono font-bold text-emerald-700">
+                                <a href="{% url 'operations:sale_detail' sale.pk %}" class="hover:underline">
+                                    {{ sale.invoice_number }}
+                                </a>
+                            </td>
+                            <td class="table-cell text-xs">
+                                {% if sale.is_manual_sale %}
+                                    <span class="badge bg-amber-100 text-amber-800 text-[10px]">✍️ {% trans "Manual" %}</span>
+                                {% else %}
+                                    <span class="badge bg-slate-100 text-slate-700 text-[10px]">📟 {% trans "Meter" %}</span>
+                                {% endif %}
+                            </td>
+                            <td class="table-cell">
+                                <span class="badge {{ sale.fuel_type.badge_class }} text-[11px]">{{ sale.fuel_type.code }}</span>
+                            </td>
+                            <td class="table-cell font-mono font-bold">{{ sale.quantity }} L</td>
+                            <td class="table-cell font-mono font-bold text-emerald-800">{{ sale.total_amount|currency_npr }}</td>
+                            <td class="table-cell text-xs">
+                                <span class="badge bg-slate-100 text-slate-800">{{ sale.get_payment_method_display }}</span>
+                            </td>
+                            <td class="table-cell text-xs text-slate-600">
+                                {{ sale.customer_name }}{% if sale.vehicle_number %} ({{ sale.vehicle_number }}){% endif %}
+                            </td>
+                            <td class="table-cell text-right">
+                                <a href="{% url 'operations:sale_detail' sale.pk %}" class="btn btn-secondary btn-sm">
+                                    👁️ {% trans "Invoice" %}
+                                </a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="8" class="py-6 text-center text-slate-400 text-xs">
+                                {% trans "No sales invoices logged for this shift yet." %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

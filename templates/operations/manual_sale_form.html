@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load i18n nepali_tags %}
+
+{% block title %}{{ title }} | {{ station_name }}{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto space-y-6">
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900">{{ title }}</h1>
+            <p class="text-sm text-slate-500">
+                {% trans "Shift:" %} <span class="font-mono font-bold">{{ active_shift.shift_number }}</span>
+            </p>
+        </div>
+        <a href="{% url 'operations:sales_register' %}" class="btn btn-secondary text-xs">
+            &larr; {% trans "Back to Sales Register" %}
+        </a>
+    </div>
+
+    <!-- Alert explaining manual entry requirement -->
+    <div class="p-3.5 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-center gap-2">
+        <span>⚠️</span>
+        <span>{% trans "Manual sales require an authorized reason and deduct stock from the selected storage tank immediately." %}</span>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+        <form method="POST">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="mb-5 p-3.5 rounded-lg bg-red-50 border border-red-200 text-red-800 text-xs">
+                    {% for error in form.non_field_errors %}
+                        <p>⚠️ {{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="form-group">
+                    <label class="form-label">{{ form.fuel_type.label }} *</label>
+                    {{ form.fuel_type }}
+                    {% if form.fuel_type.errors %}<p class="form-error">{{ form.fuel_type.errors.0 }}</p>{% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">{{ form.tank.label }} *</label>
+                    {{ form.tank }}
+                    {% if form.tank.errors %}<p class="form-error">{{ form.tank.errors.0 }}</p>{% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label font-bold">{{ form.quantity.label }} *</label>
+                    {{ form.quantity }}
+                    {% if form.quantity.errors %}<p class="form-error">{{ form.quantity.errors.0 }}</p>{% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label font-bold">{{ form.unit_price.label }} *</label>
+                    {{ form.unit_price }}
+                    {% if form.unit_price.errors %}<p class="form-error">{{ form.unit_price.errors.0 }}</p>{% endif %}
+                </div>
+
+                <div class="form-group sm:col-span-2">
+                    <label class="form-label">{{ form.payment_method.label }} *</label>
+                    {{ form.payment_method }}
+                    {% if form.payment_method.errors %}<p class="form-error">{{ form.payment_method.errors.0 }}</p>{% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">{{ form.customer_name.label }}</label>
+                    {{ form.customer_name }}
+                    {% if form.customer_name.errors %}<p class="form-error">{{ form.customer_name.errors.0 }}</p>{% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">{{ form.vehicle_number.label }}</label>
+                    {{ form.vehicle_number }}
+                    {% if form.vehicle_number.errors %}<p class="form-error">{{ form.vehicle_number.errors.0 }}</p>{% endif %}
+                </div>
+
+                <div class="form-group sm:col-span-2">
+                    <label class="form-label font-bold">{{ form.reason_for_manual.label }} *</label>
+                    {{ form.reason_for_manual }}
+                    <p class="form-help text-[11px]">{{ form.reason_for_manual.help_text }}</p>
+                    {% if form.reason_for_manual.errors %}<p class="form-error">{{ form.reason_for_manual.errors.0 }}</p>{% endif %}
+                </div>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-slate-100 flex justify-end gap-3">
+                <a href="{% url 'operations:sales_register' %}" class="btn btn-secondary text-sm">
+                    {% trans "Cancel" %}
+                </a>
+                <button type="submit" class="btn btn-primary text-sm font-semibold shadow-sm">
+                    💾 {% trans "Record Manual Sale" %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+{% load i18n nepali_tags %}
+
+{% block title %}{% trans "Shift Management" %} | {{ station_name }}{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900">{% trans "Shift Management & Supervision" %}</h1>
+            <p class="text-sm text-slate-500">
+                {% trans "Manage daily duty shifts, employee assignments, cash drawer floats, and managerial approvals." %}
+            </p>
+        </div>
+        <div class="flex items-center gap-2">
+            {% if not active_shift and user.is_owner or not active_shift and user.is_manager %}
+                <a href="{% url 'operations:shift_open' %}" class="btn btn-primary">
+                    <span>⏱️</span>
+                    <span>{% trans "Open New Shift" %}</span>
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Active Shift Banner if Open -->
+    {% if active_shift %}
+        <div class="bg-gradient-to-r from-emerald-800 to-teal-800 rounded-xl p-5 text-white shadow-md flex flex-col md:flex-row md:items-center md:justify-between gap-4 border border-emerald-600">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-2xl animate-pulse">
+                    🟢
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="badge bg-emerald-400 text-emerald-950 font-bold text-xs uppercase">
+                            {% trans "Currently Active / Open Shift" %}
+                        </span>
+                        <span class="font-mono text-emerald-200 text-xs">{{ active_shift.shift_number }}</span>
+                    </div>
+                    <h2 class="text-lg font-bold mt-1">{{ active_shift.schedule.name_en }}</h2>
+                    <p class="text-xs text-emerald-200">
+                        {% trans "Supervisor:" %} <span class="font-semibold text-white">{{ active_shift.supervisor.get_full_name|default:active_shift.supervisor.username }}</span> &bull;
+                        {% trans "Opened at:" %} {{ active_shift.opening_time|time:"H:i" }} ({{ active_shift.date_bs }} BS)
+                    </p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2.5">
+                <a href="{% url 'operations:meter_reading_create' %}" class="btn bg-white/10 hover:bg-white/20 text-white border-white/20 text-xs">
+                    📟 {% trans "Log Meter Reading" %}
+                </a>
+                <a href="{% url 'operations:manual_sale_create' %}" class="btn bg-white/10 hover:bg-white/20 text-white border-white/20 text-xs">
+                    ✍️ {% trans "Manual Sale" %}
+                </a>
+                <a href="{% url 'operations:shift_detail' active_shift.pk %}" class="btn bg-white text-emerald-900 hover:bg-emerald-50 text-xs font-bold shadow-sm">
+                    {% trans "Manage Shift" %} &rarr;
+                </a>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Shifts Table & History -->
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <h2 class="text-sm font-bold text-slate-800 uppercase tracking-wider">
+                {% trans "Shift History & Cash Handover Register" %}
+            </h2>
+            <form method="GET" class="flex items-center gap-2">
+                <input type="date" name="date" value="{{ selected_date }}" class="form-input text-xs py-1.5">
+                <select name="status" class="form-select text-xs py-1.5">
+                    <option value="">{% trans "All Statuses" %}</option>
+                    <option value="OPEN" {% if selected_status == 'OPEN' %}selected{% endif %}>{% trans "Open" %}</option>
+                    <option value="CLOSED" {% if selected_status == 'CLOSED' %}selected{% endif %}>{% trans "Closed" %}</option>
+                    <option value="APPROVED" {% if selected_status == 'APPROVED' %}selected{% endif %}>{% trans "Approved" %}</option>
+                </select>
+                <button type="submit" class="btn btn-secondary text-xs py-1.5 px-3">
+                    {% trans "Filter" %}
+                </button>
+            </form>
+        </div>
+
+        <div class="table-container border-0 rounded-none shadow-none">
+            <table class="table-base">
+                <thead class="table-header">
+                    <tr>
+                        <th scope="col">{% trans "Shift #" %}</th>
+                        <th scope="col">{% trans "Schedule" %}</th>
+                        <th scope="col">{% trans "Date (BS & AD)" %}</th>
+                        <th scope="col">{% trans "Supervisor & Staff" %}</th>
+                        <th scope="col">{% trans "Opening Cash" %}</th>
+                        <th scope="col">{% trans "Counted Cash" %}</th>
+                        <th scope="col">{% trans "Cash Variance" %}</th>
+                        <th scope="col">{% trans "Status" %}</th>
+                        <th scope="col" class="text-right">{% trans "Actions" %}</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    {% for s in shifts %}
+                        <tr class="table-row">
+                            <td class="table-cell font-mono font-bold text-slate-900">
+                                <a href="{% url 'operations:shift_detail' s.pk %}" class="text-emerald-700 hover:underline">
+                                    {{ s.shift_number }}
+                                </a>
+                            </td>
+                            <td class="table-cell font-medium text-slate-800">
+                                {{ s.schedule.name_en }}
+                            </td>
+                            <td class="table-cell text-xs">
+                                <span class="font-medium text-slate-900 block">{{ s.date_bs }} BS</span>
+                                <span class="text-slate-400 font-mono">{{ s.date_ad }}</span>
+                            </td>
+                            <td class="table-cell text-xs">
+                                <span class="font-semibold text-slate-800 block">{{ s.supervisor.get_full_name|default:s.supervisor.username }}</span>
+                                <span class="text-slate-500">{{ s.operators.count }} {% trans "operators" %}</span>
+                            </td>
+                            <td class="table-cell font-mono text-slate-700">
+                                {{ s.opening_cash_balance|currency_npr }}
+                            </td>
+                            <td class="table-cell font-mono text-slate-700">
+                                {% if s.is_closed %}
+                                    {{ s.closing_cash_balance|currency_npr }}
+                                {% else %}
+                                    <span class="text-slate-400">-</span>
+                                {% endif %}
+                            </td>
+                            <td class="table-cell font-mono">
+                                {% if s.is_closed %}
+                                    {% if s.cash_difference == 0 %}
+                                        <span class="text-emerald-700 font-bold">{% trans "Matched" %} (0.00)</span>
+                                    {% elif s.has_cash_shortage %}
+                                        <span class="text-red-700 font-bold">{{ s.cash_difference|currency_npr }} ({% trans "Short" %})</span>
+                                    {% else %}
+                                        <span class="text-blue-700 font-bold">+{{ s.cash_difference|currency_npr }} ({% trans "Excess" %})</span>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="text-slate-400">{% trans "In progress" %}</span>
+                                {% endif %}
+                            </td>
+                            <td class="table-cell">
+                                {% if s.status == 'OPEN' %}
+                                    <span class="badge badge-success text-[11px] animate-pulse">
+                                        🟢 {% trans "Open" %}
+                                    </span>
+                                {% elif s.status == 'CLOSED' %}
+                                    <span class="badge bg-amber-100 text-amber-800 border-amber-300 text-[11px]">
+                                        ⏳ {% trans "Pending Approval" %}
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-blue-100 text-blue-800 border-blue-300 text-[11px]">
+                                        ✓ {% trans "Approved" %}
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td class="table-cell text-right space-x-1.5">
+                                <a href="{% url 'operations:shift_detail' s.pk %}" class="btn btn-secondary btn-sm">
+                                    👁️ {% trans "View" %}
+                                </a>
+                                {% if s.is_open %}
+                                    <a href="{% url 'operations:shift_close' s.pk %}" class="btn btn-danger btn-sm">
+                                        🛑 {% trans "Close Shift" %}
+                                    </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="9" class="py-8 text-center text-slate-500 text-sm">
+                                {% trans "No shifts recorded yet." %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

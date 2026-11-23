@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load i18n nepali_tags %}
+
+{% block title %}{% trans "Void Invoice" %} {{ sale.invoice_number }} | {{ station_name }}{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto space-y-6">
+    <!-- Header -->
+    <div class="flex items-center gap-3">
+        <a href="{% url 'operations:sale_detail' pk=sale.pk %}" class="btn btn-secondary text-xs">
+            <span>←</span>
+            <span>{% trans "Back" %}</span>
+        </a>
+        <div>
+            <h1 class="text-xl font-bold text-red-900">{% trans "Void / Cancel Sales Invoice" %}</h1>
+            <p class="text-xs text-slate-500">
+                {% trans "Audited reversal of sales transaction and physical fuel stock restoration." %}
+            </p>
+        </div>
+    </div>
+
+    <!-- Warning Card -->
+    <div class="p-4 bg-red-50 border border-red-300 rounded-xl text-xs text-red-900 space-y-2">
+        <div class="flex items-center gap-2 font-bold text-sm text-red-800">
+            <span>⚠️</span>
+            <span>{% trans "Caution: Irreversible Transaction" %}</span>
+        </div>
+        <p>
+            {% trans "Voiding invoice" %} <strong>{{ sale.invoice_number }}</strong> {% trans "will permanently mark it as cancelled, reverse the revenue, and restore" %} <strong>{{ sale.quantity }} L</strong> {% trans "of fuel back into storage tank" %} <strong>{{ sale.tank.tank_name }} ({{ sale.tank.tank_number }})</strong>.
+        </p>
+        <p class="text-red-700">
+            {% trans "A double-entry Stock Movement (SALE_REVERSAL) will be recorded permanently in the audit ledger." %}
+        </p>
+    </div>
+
+    <!-- Sale Summary -->
+    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm text-xs space-y-3">
+        <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">{% trans "Invoice Summary" %}</span>
+        <div class="flex justify-between py-1 border-b border-slate-100">
+            <span class="text-slate-500">{% trans "Invoice Number" %}:</span>
+            <span class="font-mono font-bold text-slate-900">{{ sale.invoice_number }}</span>
+        </div>
+        <div class="flex justify-between py-1 border-b border-slate-100">
+            <span class="text-slate-500">{% trans "Date & Time" %}:</span>
+            <span class="font-medium text-slate-900">{{ sale.transaction_date|date:"Y-m-d H:i" }} ({{ sale.transaction_date|ad_to_bs_nepali }})</span>
+        </div>
+        <div class="flex justify-between py-1 border-b border-slate-100">
+            <span class="text-slate-500">{% trans "Fuel Product" %}:</span>
+            <span class="font-bold text-slate-900">{{ sale.fuel_type.name_en }} ({{ sale.fuel_type.code }})</span>
+        </div>
+        <div class="flex justify-between py-1 border-b border-slate-100">
+            <span class="text-slate-500">{% trans "Quantity" %}:</span>
+            <span class="font-mono font-bold text-slate-900">{{ sale.quantity }} L</span>
+        </div>
+        <div class="flex justify-between py-1 border-b border-slate-100">
+            <span class="text-slate-500">{% trans "Unit Rate" %}:</span>
+            <span class="font-mono text-slate-700">{{ sale.unit_price|currency_npr }}</span>
+        </div>
+        <div class="flex justify-between py-1 border-b border-slate-100">
+            <span class="text-slate-500">{% trans "Total Amount" %}:</span>
+            <span class="font-mono font-bold text-emerald-800">{{ sale.total_amount|currency_npr }}</span>
+        </div>
+        <div class="flex justify-between py-1">
+            <span class="text-slate-500">{% trans "Customer / Vehicle" %}:</span>
+            <span class="text-slate-900">{{ sale.customer_name|default:"Retail" }} {% if sale.vehicle_number %}({{ sale.vehicle_number }}){% endif %}</span>
+        </div>
+    </div>
+
+    <!-- Cancellation Form -->
+    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+        <form method="POST" class="space-y-4">
+            {% csrf_token %}
+
+            <div>
+                <label for="{{ form.cancellation_reason.id_for_label }}" class="form-label text-slate-900 font-semibold">
+                    {{ form.cancellation_reason.label }} <span class="text-red-500">*</span>
+                </label>
+                {{ form.cancellation_reason }}
+                <p class="form-help text-xs text-slate-500 mt-1">
+                    {{ form.cancellation_reason.help_text }}
+                </p>
+                {% if form.cancellation_reason.errors %}
+                    <p class="form-error text-xs text-red-600 mt-1">{{ form.cancellation_reason.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div class="pt-4 flex items-center justify-end gap-3 border-t border-slate-200">
+                <a href="{% url 'operations:sale_detail' pk=sale.pk %}" class="btn btn-secondary text-xs">
+                    {% trans "Discard" %}
+                </a>
+                <button type="submit" class="btn btn-danger text-xs font-semibold px-4 py-2">
+                    <span>🚫</span>
+                    <span>{% trans "Confirm Void & Restore Stock" %}</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

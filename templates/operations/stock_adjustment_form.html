@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% load i18n nepali_tags %}
+
+{% block title %}{{ title }} | {{ station_name }}{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto space-y-6">
+    <!-- Header -->
+    <div class="flex items-center gap-3">
+        <a href="{% url 'operations:stock_ledger' %}" class="btn btn-secondary text-xs">
+            <span>←</span>
+            <span>{% trans "Back to Stock Ledger" %}</span>
+        </a>
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900">{{ title }}</h1>
+            <p class="text-xs text-slate-500">
+                {% trans "Record authorized dip variations, evaporation, calibration return, or verified physical tank reconcile." %}
+            </p>
+        </div>
+    </div>
+
+    <!-- Guidance Banner -->
+    <div class="p-4 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-900 space-y-1">
+        <span class="font-bold block text-sm">⚠️ {% trans "Audited Tank Stock Adjustment Rules" %}</span>
+        <ul class="list-disc list-inside space-y-0.5 text-amber-800">
+            <li>{% trans "For dip loss / evaporation, specify a negative quantity or select Adjustment." %}</li>
+            <li>{% trans "For nozzle calibration fuel returned into tank, select Testing & Calibration Return." %}</li>
+            <li>{% trans "A mandatory remark detailing the dip stick reading, tank water test, or meter calibration note is required." %}</li>
+        </ul>
+    </div>
+
+    <!-- Form Container -->
+    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+        <form method="POST" class="space-y-4">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-700">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <!-- Tank Selection -->
+            <div>
+                <label for="{{ form.tank.id_for_label }}" class="form-label text-slate-900 font-semibold">
+                    {{ form.tank.label }} <span class="text-red-500">*</span>
+                </label>
+                {{ form.tank }}
+                {% if form.tank.errors %}
+                    <p class="form-error text-xs text-red-600 mt-1">{{ form.tank.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Movement Type Selection -->
+            <div>
+                <label for="{{ form.movement_type.id_for_label }}" class="form-label text-slate-900 font-semibold">
+                    {{ form.movement_type.label }} <span class="text-red-500">*</span>
+                </label>
+                {{ form.movement_type }}
+                {% if form.movement_type.errors %}
+                    <p class="form-error text-xs text-red-600 mt-1">{{ form.movement_type.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Quantity -->
+            <div>
+                <label for="{{ form.quantity.id_for_label }}" class="form-label text-slate-900 font-semibold">
+                    {{ form.quantity.label }} (Litres) <span class="text-red-500">*</span>
+                </label>
+                {{ form.quantity }}
+                <p class="form-help text-xs text-slate-500 mt-1">
+                    {{ form.quantity.help_text|default:_("Enter volume in litres. Positive (+) increases tank stock, negative (-) reduces tank stock.") }}
+                </p>
+                {% if form.quantity.errors %}
+                    <p class="form-error text-xs text-red-600 mt-1">{{ form.quantity.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Remarks -->
+            <div>
+                <label for="{{ form.remarks.id_for_label }}" class="form-label text-slate-900 font-semibold">
+                    {{ form.remarks.label }} <span class="text-red-500">*</span>
+                </label>
+                {{ form.remarks }}
+                <p class="form-help text-xs text-slate-500 mt-1">
+                    {{ form.remarks.help_text }}
+                </p>
+                {% if form.remarks.errors %}
+                    <p class="form-error text-xs text-red-600 mt-1">{{ form.remarks.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div class="pt-4 flex items-center justify-end gap-3 border-t border-slate-200">
+                <a href="{% url 'operations:stock_ledger' %}" class="btn btn-secondary text-xs">
+                    {% trans "Cancel" %}
+                </a>
+                <button type="submit" class="btn btn-primary text-xs font-semibold px-4 py-2">
+                    <span>💾</span>
+                    <span>{% trans "Record Stock Movement" %}</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
