@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% load i18n nepali_tags %}
+
+{% block title %}{% trans "Storage Tanks" %} | {{ station_name }}{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900">{% trans "Underground Storage Tanks" %}</h1>
+            <p class="text-sm text-slate-500">
+                {% trans "Monitor tank capacity, current dipping stock levels, and safe minimum reorder thresholds." %}
+            </p>
+        </div>
+        <div>
+            <a href="{% url 'station:tank_create' %}" class="btn btn-primary">
+                <span>➕</span>
+                <span>{% trans "Add Storage Tank" %}</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Visual Tank Gauges Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {% for tank in tanks %}
+            <div class="stat-card border-t-4" style="border-top-color: {{ tank.fuel_type.color_code }};">
+                <div class="flex items-start justify-between">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="font-mono font-bold text-sm bg-slate-100 text-slate-800 px-2 py-0.5 rounded">
+                                {{ tank.tank_number }}
+                            </span>
+                            <span class="badge {{ tank.fuel_type.badge_class }}">
+                                {{ tank.fuel_type.name_en }}
+                            </span>
+                        </div>
+                        <h2 class="text-base font-bold text-slate-900 mt-2">{{ tank.tank_name }}</h2>
+                    </div>
+                    <div class="text-right">
+                        {% if tank.is_low_stock %}
+                            <span class="badge badge-danger text-xs animate-pulse">
+                                ⚠️ {% trans "Low Stock Alert" %}
+                            </span>
+                        {% else %}
+                            <span class="badge badge-success text-xs">
+                                ✓ {% trans "Adequate" %}
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Progress Bar / Gauge -->
+                <div class="mt-4">
+                    <div class="flex justify-between items-center text-xs mb-1.5">
+                        <span class="text-slate-600 font-medium">{% trans "Stock Fill Level" %}</span>
+                        <span class="font-bold text-slate-900">{{ tank.stock_percentage }}%</span>
+                    </div>
+                    <div class="w-full bg-slate-100 rounded-full h-3.5 overflow-hidden p-0.5 border border-slate-200">
+                        <div class="h-full rounded-full transition-all duration-500" style="width: {{ tank.stock_percentage }}%; background-color: {{ tank.fuel_type.color_code }};"></div>
+                    </div>
+                </div>
+
+                <!-- Tank Capacity Metrics -->
+                <div class="mt-4 pt-3 border-t border-slate-100 grid grid-cols-3 gap-2 text-center text-xs">
+                    <div>
+                        <span class="text-slate-500 block text-[10px] uppercase">{% trans "Current Stock" %}</span>
+                        <span class="font-bold text-slate-900 font-mono">{{ tank.current_stock }} L</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-500 block text-[10px] uppercase">{% trans "Max Capacity" %}</span>
+                        <span class="font-bold text-slate-900 font-mono">{{ tank.capacity_liters }} L</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-500 block text-[10px] uppercase">{% trans "Connected Nozzles" %}</span>
+                        <span class="font-bold text-emerald-700">{{ tank.nozzles_count }}</span>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-3 border-t border-slate-100 flex justify-end">
+                    <a href="{% url 'station:tank_edit' tank.pk %}" class="btn btn-secondary btn-sm">
+                        ✏️ {% trans "Edit Tank Details" %}
+                    </a>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-span-2 bg-white rounded-xl p-8 border border-slate-200 text-center text-slate-500">
+                {% trans "No underground storage tanks configured yet." %}
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Tanks Data Table -->
+    <div class="table-container">
+        <table class="table-base">
+            <thead class="table-header">
+                <tr>
+                    <th scope="col">{% trans "Tank Code" %}</th>
+                    <th scope="col">{% trans "Tank Name" %}</th>
+                    <th scope="col">{% trans "Fuel" %}</th>
+                    <th scope="col">{% trans "Max Capacity" %}</th>
+                    <th scope="col">{% trans "Opening Stock" %}</th>
+                    <th scope="col">{% trans "Current Stock" %}</th>
+                    <th scope="col">{% trans "Alert Threshold" %}</th>
+                    <th scope="col" class="text-right">{% trans "Actions" %}</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                {% for tank in tanks %}
+                    <tr class="table-row">
+                        <td class="table-cell font-mono font-bold text-slate-900">
+                            {{ tank.tank_number }}
+                        </td>
+                        <td class="table-cell font-medium text-slate-800">
+                            {{ tank.tank_name }}
+                        </td>
+                        <td class="table-cell">
+                            <span class="badge {{ tank.fuel_type.badge_class }}">
+                                {{ tank.fuel_type.code }}
+                            </span>
+                        </td>
+                        <td class="table-cell font-mono text-slate-700">
+                            {{ tank.capacity_liters }} L
+                        </td>
+                        <td class="table-cell font-mono text-slate-600">
+                            {{ tank.opening_stock }} L
+                        </td>
+                        <td class="table-cell font-mono font-bold text-slate-900">
+                            {{ tank.current_stock }} L
+                        </td>
+                        <td class="table-cell font-mono text-amber-700">
+                            {{ tank.alert_threshold }} L
+                        </td>
+                        <td class="table-cell text-right">
+                            <a href="{% url 'station:tank_edit' tank.pk %}" class="btn btn-secondary btn-sm">
+                                ✏️ {% trans "Edit" %}
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

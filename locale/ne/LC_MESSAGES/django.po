@@ -1,0 +1,2094 @@
+# Translation file for Petrol Station Management System (Nepali)
+# Copyright (C) 2026 Basista Oil Traders
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-23 14:00+0545\n"
+"PO-Revision-Date: 2026-11-23 14:00+0545\n"
+"Last-Translator: Antigravity AI\n"
+"Language-Team: Nepali <ne@li.org>\n"
+"Language: ne\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "English"
+msgstr "अंग्रेजी"
+
+msgid "Nepali (नेपाली)"
+msgstr "नेपाली"
+
+msgid "Nepali"
+msgstr "नेपाली"
+
+msgid "Petrol Station Management System"
+msgstr "पेट्रोल पम्प व्यवस्थापन प्रणाली"
+
+msgid "Nepal Petrol Station Management"
+msgstr "नेपाल पेट्रोल पम्प व्यवस्थापन प्रणाली"
+
+msgid "Sign In"
+msgstr "लगइन गर्नुहोस्"
+
+msgid "Sign In to Station"
+msgstr "प्रणालीमा लगइन गर्नुहोस्"
+
+msgid "Sign In Now"
+msgstr "अहिले लगइन गर्नुहोस्"
+
+msgid "Log Out"
+msgstr "लगआउट गर्नुहोस्"
+
+msgid "Username or Employee Code"
+msgstr "प्रयोगकर्ता नाम वा कर्मचारी कोड"
+
+msgid "Enter your username"
+msgstr "आफ्नो प्रयोगकर्ता नाम राख्नुहोस्"
+
+msgid "Password"
+msgstr "पासवर्ड"
+
+msgid "Forgot password?"
+msgstr "पासवर्ड बिर्सनुभयो?"
+
+msgid "Authorized station staff only. Access is monitored and logged."
+msgstr "अधिकृत कर्मचारीहरूका लागि मात्र। सबै गतिविधि निगरानी र रेकर्ड गरिन्छ।"
+
+msgid "Language"
+msgstr "भाषा"
+
+msgid "Dashboard"
+msgstr "ड्यासबोर्ड"
+
+msgid "Station Dashboard"
+msgstr "पम्प सञ्चालन ड्यासबोर्ड"
+
+msgid "Operations"
+msgstr "सञ्चालन कार्यहरू"
+
+msgid "Fuel Sales Entry"
+msgstr "इन्धन बिक्री प्रविष्टि"
+
+msgid "Meter Readings"
+msgstr "पम्प मिटर रिडिङ"
+
+msgid "Purchases & Tanks"
+msgstr "इन्धन खरिद र ट्याङ्की"
+
+msgid "Expenses & Cash"
+msgstr "दैनिक खर्च र नगद"
+
+msgid "Customer Credit"
+msgstr "ग्राहक उधारो खाता"
+
+msgid "Administration"
+msgstr "व्यवस्थापन"
+
+msgid "Staff & Users"
+msgstr "कर्मचारी र प्रयोगकर्ताहरू"
+
+msgid "Staff & User Management"
+msgstr "कर्मचारी तथा प्रयोगकर्ता व्यवस्थापन"
+
+msgid ""
+"Manage petrol station employees, assigned roles, and access credentials."
+msgstr ""
+"पेट्रोल पम्पका कर्मचारी, तोकिएका भूमिकाहरू र पहुँच विवरण व्यवस्थापन "
+"गर्नुहोस्।"
+
+msgid "Add New Staff Member"
+msgstr "नयाँ कर्मचारी थप्नुहोस्"
+
+msgid "Station Reports"
+msgstr "पम्प रिपोर्टहरू"
+
+msgid "My Profile & Settings"
+msgstr "मेरो प्रोफाइल र सेटिङ"
+
+msgid "Change Password"
+msgstr "पासवर्ड परिवर्तन गर्नुहोस्"
+
+msgid "Update your password to keep your station account secure."
+msgstr "आफ्नो खाता सुरक्षित राख्न पासवर्ड अपडेट गर्नुहोस्।"
+
+msgid "Cancel"
+msgstr "रद्द गर्नुहोस्"
+
+msgid "Update Password"
+msgstr "पासवर्ड अपडेट गर्नुहोस्"
+
+msgid "Password Changed"
+msgstr "पासवर्ड परिवर्तन भयो"
+
+msgid "Password Changed Successfully"
+msgstr "पासवर्ड सफलतापूर्वक परिवर्तन भयो"
+
+msgid "Your login credentials have been updated."
+msgstr "तपाईंको लगइन विवरण अद्यावधिक गरिएको छ।"
+
+msgid "Return to Dashboard"
+msgstr "ड्यासबोर्डमा फर्कनुहोस्"
+
+msgid "Reset Station Password"
+msgstr "स्टेशन पासवर्ड रिसेट गर्नुहोस्"
+
+msgid ""
+"Enter your registered email address to receive password reset instructions."
+msgstr ""
+"पासवर्ड रिसेट निर्देशनहरू प्राप्त गर्न आफ्नो दर्ता गरिएको इमेल ठेगाना "
+"प्रविष्ट गर्नुहोस्।"
+
+msgid "Send Reset Link"
+msgstr "रिसेट लिङ्क पठाउनुहोस्"
+
+msgid "Check Your Email"
+msgstr "आफ्नो इमेल जाँच गर्नुहोस्"
+
+msgid ""
+"We have emailed you instructions for resetting your password if an account "
+"exists with the provided email."
+msgstr ""
+"यदि दिइएको इमेलसँग खाता अवस्थित छ भने हामीले पासवर्ड रिसेट गर्ने निर्देशनहरू"
+" इमेल गरेका छौं।"
+
+msgid "Choose a New Password"
+msgstr "नयाँ पासवर्ड छान्नुहोस्"
+
+msgid "Please enter your new station password below."
+msgstr "कृपया तल आफ्नो नयाँ पासवर्ड प्रविष्ट गर्नुहोस्।"
+
+msgid "Set New Password"
+msgstr "नयाँ पासवर्ड सुरक्षित गर्नुहोस्"
+
+msgid "Password Reset Successfully"
+msgstr "पासवर्ड सफलतापूर्वक रिसेट भयो"
+
+msgid ""
+"Your new password has been set. You may now sign in with your updated "
+"credentials."
+msgstr "तपाईंको नयाँ पासवर्ड सेट गरिएको छ। अब तपाईं लगइन गर्न सक्नुहुन्छ।"
+
+msgid "User Profile"
+msgstr "प्रयोगकर्ता प्रोफाइल"
+
+msgid "View and update your personal station contact information."
+msgstr "आफ्नो व्यक्तिगत सम्पर्क जानकारी हेर्नुहोस् र अद्यावधिक गर्नुहोस्।"
+
+msgid "Save Profile"
+msgstr "प्रोफाइल सुरक्षित गर्नुहोस्"
+
+msgid "Role"
+msgstr "भूमिका"
+
+msgid "Phone Number"
+msgstr "फोन नम्बर"
+
+msgid "Employee ID / Code"
+msgstr "कर्मचारी परिचय कोड"
+
+msgid "Employee ID"
+msgstr "कर्मचारी कोड"
+
+msgid "Address"
+msgstr "ठेगाना"
+
+msgid "Language Preference"
+msgstr "भाषा प्राथमिकता"
+
+msgid "Default Language"
+msgstr "पूर्वनिर्धारित भाषा"
+
+msgid "Active"
+msgstr "सक्रिय"
+
+msgid "Inactive"
+msgstr "निस्क्रिय"
+
+msgid "Actions"
+msgstr "कार्यहरू"
+
+msgid "Edit"
+msgstr "सम्पादन"
+
+msgid "Activate"
+msgstr "सक्रिय गर्नुहोस्"
+
+msgid "Deactivate"
+msgstr "निस्क्रिय गर्नुहोस्"
+
+msgid "Search"
+msgstr "खोज्नुहोस्"
+
+msgid "Filter"
+msgstr "फिल्टर गर्नुहोस्"
+
+msgid "All Roles"
+msgstr "सबै भूमिकाहरू"
+
+msgid "All Statuses"
+msgstr "सबै स्थितिहरू"
+
+msgid "Active Only"
+msgstr "सक्रिय मात्र"
+
+msgid "Inactive Only"
+msgstr "निस्क्रिय मात्र"
+
+msgid "Full Name"
+msgstr "पूरा नाम"
+
+msgid "First Name"
+msgstr "पहिलो नाम"
+
+msgid "Last Name"
+msgstr "थर / पछिल्लो नाम"
+
+msgid "Email Address"
+msgstr "इमेल ठेगाना"
+
+msgid "Owner / Administrator"
+msgstr "सञ्चालक / मुख्य प्रशासक"
+
+msgid "Manager"
+msgstr "स्टेशन प्रबन्धक"
+
+msgid "Accountant"
+msgstr "लेखापाल"
+
+msgid "Cashier"
+msgstr "क्यासियर"
+
+msgid "Pump Operator"
+msgstr "पम्प अपरेटर"
+
+msgid "Active Pumps"
+msgstr "सञ्चालित पम्पहरू"
+
+msgid "Total Nozzles"
+msgstr "कुल नोजलहरू"
+
+msgid "Petrol (MS) Tank"
+msgstr "पेट्रोल (MS) ट्याङ्क"
+
+msgid "Diesel (HSD) Tank"
+msgstr "डिजेल (HSD) ट्याङ्क"
+
+msgid "Today's Sales"
+msgstr "आजको कुल बिक्री"
+
+msgid "Ready for Dispensing"
+msgstr "इन्धन वितरणका लागि उपलब्ध"
+
+msgid "Quick Actions"
+msgstr "द्रुत कार्यहरू"
+
+msgid "Staff Management"
+msgstr "कर्मचारी व्यवस्थापन"
+
+msgid "Manage roles and station staff"
+msgstr "भूमिका र कर्मचारी विवरण व्यवस्थापन गर्नुहोस्"
+
+msgid "Security Settings"
+msgstr "सुरक्षा सेटिङहरू"
+
+msgid "Change login password"
+msgstr "लगइन पासवर्ड परिवर्तन गर्नुहोस्"
+
+msgid "Station Modules & Project Roadmap"
+msgstr "पम्प मोड्युलहरू र आगामी चरणहरू"
+
+msgid "Bikram Sambat (BS)"
+msgstr "बिक्रम संवत् (वि.सं.)"
+
+msgid "Gregorian (AD)"
+msgstr "ग्रेगोरियन क्यालेन्डर (सन्)"
+
+msgid "Nepal Station Operating System"
+msgstr "नेपाल पेट्रोल पम्प सञ्चालन प्रणाली"
+
+msgid "Welcome back, %(name)s! Logged in successfully."
+msgstr "स्वागत छ, %(name)s! सफलतापूर्वक लगइन भयो।"
+
+msgid "You have been successfully logged out."
+msgstr "तपाईं सफलतापूर्वक लगआउट हुनुभएको छ।"
+
+msgid "Your password has been changed successfully."
+msgstr "तपाईंको पासवर्ड सफलतापूर्वक परिवर्तन गरिएको छ।"
+
+msgid "User '%(username)s' created successfully."
+msgstr "प्रयोगकर्ता '%(username)s' सफलतापूर्वक सिर्जना गरियो।"
+
+msgid "User '%(username)s' updated successfully."
+msgstr "प्रयोगकर्ता '%(username)s' सफलतापूर्वक अद्यावधिक गरियो।"
+
+msgid "You do not have permission to access this resource."
+msgstr "तपाईंसँग यो स्रोत पहुँच गर्ने अनुमति छैन।"
+
+msgid "You do not have permission to access this page."
+msgstr "तपाईंसँग यो पृष्ठ हेर्ने अनुमति छैन।"
+
+msgid "You cannot deactivate your own account."
+msgstr "तपाईंले आफ्नै खाता निष्कृय गर्न सक्नुहुन्न।"
+
+msgid "User '%(username)s' has been %(status)s."
+msgstr "प्रयोगकर्ता '%(username)s' %(status)s गरिएको छ।"
+
+msgid "activated"
+msgstr "सक्रिय"
+
+msgid "deactivated"
+msgstr "निस्क्रिय"
+
+msgid "Your profile has been updated."
+msgstr "तपाईंको प्रोफाइल अद्यावधिक गरिएको छ।"
+
+msgid "Petrol Station Management System (Nepal)"
+msgstr "पेट्रोल पम्प व्यवस्थापन प्रणाली (नेपाल)"
+
+msgid "Station Management Dashboard • Operations Overview"
+msgstr "स्टेशन व्यवस्थापन ड्यासबोर्ड • सञ्चालन सिंहावलोकन"
+
+msgid "Station Management Dashboard &bull; Operations Overview"
+msgstr "स्टेशन व्यवस्थापन ड्यासबोर्ड • सञ्चालन सिंहावलोकन"
+
+msgid "Phase 1: Setup & Authentication"
+msgstr "चरण १: परियोजना सेटअप र प्रमाणीकरण"
+
+msgid ""
+"RBAC (5 Roles), Bilingual i18n (EN/NE), Dual AD/BS calendar, Tailwind CSS."
+msgstr ""
+"५ भूमिकाहरू, द्विभाषी नेपाली/अंग्रेजी, AD/BS क्यालेन्डर, टेलविन्ड CSS।"
+
+msgid "Phase 2: Fuel Sales & Meter Readings"
+msgstr "चरण २: इन्धन बिक्री र मिटर रिडिङ"
+
+msgid ""
+"Pump 1 & 2 nozzles, opening/closing meter logs, auto quantity & price "
+"calculation."
+msgstr ""
+"पम्प १ र २ नोजलहरू, सुरु/अन्तिम मिटर लग, परिमाण र रकमको स्वचालित गणना।"
+
+msgid "Phase 3: Fuel Purchases & Inventory"
+msgstr "चरण ३: इन्धन खरिद र भण्डारण"
+
+msgid "Tank dipping, NOC tanker receipts, purchase invoices, audit ledger."
+msgstr ""
+"ट्याङ्की नाप (डिपिङ), आयल निगम ट्याङ्कर प्राप्ति, खरिद बिजक, अडिट खाता।"
+
+msgid "Phase 4: Expenses & Cash Management"
+msgstr "चरण ४: दैनिक खर्च र नगद व्यवस्थापन"
+
+msgid ""
+"Daily station expenses, shift handover cash, safe drawer reconciliation."
+msgstr "दैनिक पम्प खर्च, सिफ्ट हस्तान्तरण नगद, सुरक्षित दराज मिलान।"
+
+msgid "Phase 5: Employee & Shifts"
+msgstr "चरण ५: कर्मचारी र सिफ्ट व्यवस्थापन"
+
+msgid "Roster assignment, pump operator duty logs, attendance & short cash."
+msgstr "सिफ्ट तालिका, पम्प अपरेटर ड्युटी लग, हाजिरी र नगद हिसाब।"
+
+msgid "Phase 6 & 7: Credit, Suppliers & Reports"
+msgstr "चरण ६ र ७: उधारो, आपूर्तिकर्ता र वित्तीय रिपोर्टहरू"
+
+msgid ""
+"Fleet credit limits, supplier NOC ledger, WeasyPrint PDF, OpenPyXL exports."
+msgstr ""
+"सवारी उधारो सीमा, आपूर्तिकर्ता खाता, WeasyPrint PDF, OpenPyXL एक्सेल "
+"रिपोर्ट।"
+
+msgid "Day Shift (06:00 - 14:00)"
+msgstr "दिनको सिफ्ट (०६:०० - १४:००)"
+
+msgid "Open & Dispensing"
+msgstr "खुला र इन्धन वितरण चालू"
+
+msgid "Station Setup"
+msgstr "स्टेशन सेटअप"
+
+msgid "Fuel Products"
+msgstr "इन्धन उत्पादनहरू"
+
+msgid "Fuel Products Configuration"
+msgstr "इन्धन उत्पादन कन्फिगरेसन"
+
+msgid ""
+"Configure Petrol (MS) and Diesel (HSD) fuel types, units, and color "
+"indicators."
+msgstr ""
+"पेट्रोल (MS) र डिजेल (HSD) इन्धन प्रकार, मापन एकाइ र रंग संकेतहरू व्यवस्थापन"
+" गर्नुहोस्।"
+
+msgid "Add Fuel Product"
+msgstr "नयाँ इन्धन उत्पादन थप्नुहोस्"
+
+msgid "Fuel Product"
+msgstr "इन्धन उत्पादन"
+
+msgid "Code"
+msgstr "कोड"
+
+msgid "Unit"
+msgstr "एकाइ"
+
+msgid "Tanks Connected"
+msgstr "जोडिएका ट्याङ्कहरू"
+
+msgid "Nozzles Dispensing"
+msgstr "वितरण गर्ने नोजलहरू"
+
+msgid "Current Selling Rate"
+msgstr "हालको खुद्रा दर"
+
+msgid "Cost:"
+msgstr "लागत:"
+
+msgid "No active price set"
+msgstr "कुनै सक्रिय मूल्य तोकिएको छैन"
+
+msgid "Storage Tanks"
+msgstr "इन्धन भण्डारण ट्याङ्कीहरू"
+
+msgid "Underground Storage Tanks"
+msgstr "भूमिगत इन्धन भण्डारण ट्याङ्कीहरू"
+
+msgid ""
+"Monitor tank capacity, current dipping stock levels, and safe minimum "
+"reorder thresholds."
+msgstr ""
+"ट्याङ्की क्षमता, डिपिङ स्टक स्तर र सुरक्षित न्यूनतम स्टक सीमा निगरानी "
+"गर्नुहोस्।"
+
+msgid "Add Storage Tank"
+msgstr "नयाँ भण्डारण ट्याङ्क थप्नुहोस्"
+
+msgid "Tank Code"
+msgstr "ट्याङ्क कोड"
+
+msgid "Tank Name"
+msgstr "ट्याङ्कको नाम"
+
+msgid "Fuel"
+msgstr "इन्धन"
+
+msgid "Max Capacity"
+msgstr "अधिकतम क्षमता"
+
+msgid "Opening Stock"
+msgstr "सुरुवाती मौज्दात"
+
+msgid "Current Stock"
+msgstr "हालको मौज्दात"
+
+msgid "Alert Threshold"
+msgstr "चेतावनी सीमा"
+
+msgid "Stock Fill Level"
+msgstr "स्टक भरण स्तर"
+
+msgid "Low Stock Alert"
+msgstr "न्यून स्टक चेतावनी"
+
+msgid "Adequate"
+msgstr "पर्याप्त स्टक"
+
+msgid "Connected Nozzles"
+msgstr "जोडिएका नोजलहरू"
+
+msgid "Edit Tank Details"
+msgstr "ट्याङ्क विवरण सम्पादन गर्नुहोस्"
+
+msgid "Dispensing Pumps & Nozzles"
+msgstr "इन्धन वितरण पम्प तथा नोजलहरू"
+
+msgid ""
+"Manage petrol and diesel dispensing pumps, attached nozzles, and electronic "
+"totalizer meters."
+msgstr ""
+"पेट्रोल र डिजेल वितरण पम्प, जोडिएका नोजल र इलेक्ट्रोनिक मिटरहरू व्यवस्थापन "
+"गर्नुहोस्।"
+
+msgid "Add Pump"
+msgstr "नयाँ पम्प थप्नुहोस्"
+
+msgid "Add Nozzle"
+msgstr "नयाँ नोजल थप्नुहोस्"
+
+msgid "Operating"
+msgstr "चालू / सञ्चालनमा"
+
+msgid "Maintenance"
+msgstr "मर्मत / क्यालिब्रेसन"
+
+msgid "Configured Nozzles"
+msgstr "तयार गरिएका नोजलहरू"
+
+msgid "Add Nozzle to Pump"
+msgstr "पम्पमा नोजल थप्नुहोस्"
+
+msgid "Tank:"
+msgstr "ट्याङ्क:"
+
+msgid "Current Meter"
+msgstr "हालको मिटर"
+
+msgid "Fuel Price Management"
+msgstr "इन्धन मूल्य व्यवस्थापन"
+
+msgid "Fuel Price Revisions & History"
+msgstr "इन्धन मूल्य संशोधन र इतिहास"
+
+msgid ""
+"Auditable fuel pricing history. Historical prices remain immutable for "
+"previous fuel sales transactions."
+msgstr ""
+"अडिटयोग्य इन्धन मूल्य इतिहास। अघिल्ला बिक्री कारोबारका लागि ऐतिहासिक "
+"मूल्यहरू अपरिवर्तनीय रहन्छन्।"
+
+msgid "Record Price Revision"
+msgstr "नयाँ मूल्य संशोधन दर्ता गर्नुहोस्"
+
+msgid "Retail Rate"
+msgstr "खुद्रा दर"
+
+msgid "Dealer Cost:"
+msgstr "डिलर खरिद लागत:"
+
+msgid "Dealer Margin:"
+msgstr "डिलर नाफा मार्जिन:"
+
+msgid "Effective since:"
+msgstr "लागू भएको मिति:"
+
+msgid "Price Change History & Circular Log"
+msgstr "मूल्य परिवर्तन इतिहास तथा परिपत्र लग"
+
+msgid "All Fuel Types"
+msgstr "सबै इन्धन प्रकारहरू"
+
+msgid "Selling Price"
+msgstr "बिक्री मूल्य"
+
+msgid "Purchase Price"
+msgstr "खरिद मूल्य"
+
+msgid "Dealer Margin"
+msgstr "डिलर मार्जिन"
+
+msgid "Effective Date (BS & AD)"
+msgstr "लागू मिति (वि.सं. र सन्)"
+
+msgid "Reference Circular"
+msgstr "सन्दर्भ परिपत्र"
+
+msgid "Recorded By"
+msgstr "दर्ता गर्ने"
+
+msgid "Approve"
+msgstr "स्वीकृत गर्नुहोस्"
+
+msgid "Approved"
+msgstr "स्वीकृत"
+
+msgid "Pending"
+msgstr "स्वीकृति पर्खाइमा"
+
+msgid "Station Profile & Configuration"
+msgstr "स्टेशन प्रोफाइल तथा कन्फिगरेसन"
+
+msgid ""
+"Manage official dealership identity, IRD tax details, currency, and fiscal "
+"year."
+msgstr ""
+"आधिकारिक डिलर पहिचान, कर विवरण, मुद्रा र आर्थिक वर्ष व्यवस्थापन गर्नुहोस्।"
+
+msgid "Fiscal Year:"
+msgstr "आर्थिक वर्ष:"
+
+msgid "Official Email"
+msgstr "आधिकारिक इमेल"
+
+msgid "PAN / VAT Number"
+msgstr "स्थायी लेखा नम्बर (PAN / VAT)"
+
+msgid "Inland Revenue Department (IRD) Tax Registration Number"
+msgstr "आन्तरिक राजस्व विभाग (IRD) कर दर्ता नम्बर"
+
+msgid "Station Logo"
+msgstr "स्टेशन लोगो"
+
+msgid "Currency"
+msgstr "मुद्रा"
+
+msgid "Operating Timezone"
+msgstr "सञ्चालन समय क्षेत्र"
+
+msgid "Default Language"
+msgstr "पूर्वनिर्धारित भाषा"
+
+msgid "Current Fiscal Year (BS)"
+msgstr "चालू आर्थिक वर्ष (वि.सं.)"
+
+msgid "Station Identity (Bilingual)"
+msgstr "स्टेशन पहिचान (द्विभाषी)"
+
+msgid "Contact & Government Tax Identification"
+msgstr "सम्पर्क तथा सरकारी कर दर्ता विवरण"
+
+msgid "Financial Year & System Settings"
+msgstr "आर्थिक वर्ष र प्रणाली सेटिङहरू"
+
+msgid "Save Station Profile"
+msgstr "स्टेशन प्रोफाइल सुरक्षित गर्नुहोस्"
+
+msgid "Save Configuration"
+msgstr "कन्फिगरेसन सुरक्षित गर्नुहोस्"
+
+msgid "Back"
+msgstr "फर्कनुहोस्"
+
+msgid "View Tanks"
+msgstr "ट्याङ्कहरू हेर्नुहोस्"
+
+msgid "Shifts & Handover"
+msgstr "सिफ्ट र नगद हस्तान्तरण"
+
+msgid "Daily Sales Register"
+msgstr "दैनिक बिक्री खाता"
+
+msgid "Stock Ledger"
+msgstr "स्टक लेजर"
+
+msgid "Sales Reconciliation"
+msgstr "बिक्री मिलान"
+
+msgid "Record Manual Sale"
+msgstr "म्यानुअल बिक्री दर्ता गर्नुहोस्"
+
+msgid "Tax Invoice"
+msgstr "कर बीजक (Tax Invoice)"
+
+msgid "Void / Cancel Sale"
+msgstr "बिक्री रद्द गर्नुहोस्"
+
+msgid "Void / Cancel Sales Invoice"
+msgstr "बिक्री बीजक रद्द / खारेज गर्नुहोस्"
+
+msgid "Record Nozzle Meter Reading"
+msgstr "नोजल मिटर रिडिङ दर्ता गर्नुहोस्"
+
+msgid "Open New Shift"
+msgstr "नयाँ सिफ्ट सुरु गर्नुहोस्"
+
+msgid "Close Shift"
+msgstr "सिफ्ट बन्द गर्नुहोस्"
+
+msgid "Shift Number"
+msgstr "सिफ्ट नम्बर"
+
+msgid "Opening Cash Balance (NPR)"
+msgstr "सुरुवाती नगद मौज्दात (रु)"
+
+msgid "Physical Cash Counted at Close (NPR)"
+msgstr "बन्द हुँदा गणना गरिएको नगद (रु)"
+
+msgid "Cash Handed Over (NPR)"
+msgstr "हस्तान्तरण गरिएको नगद (रु)"
+
+msgid "Expected Cash Balance (NPR)"
+msgstr "हुनुपर्ने नगद मौज्दात (रु)"
+
+msgid "Cash Variance (NPR)"
+msgstr "नगद अन्तर / फरक (रु)"
+
+msgid "Opening Meter Reading"
+msgstr "सुरुवाती मिटर रिडिङ"
+
+msgid "Closing Meter Reading"
+msgstr "अन्तिम मिटर रिडिङ"
+
+msgid "Gross Quantity Dispensed"
+msgstr "जम्मा डिस्पेंस परिमाण"
+
+msgid "Testing / Calibration Dispensed"
+msgstr "परीक्षण / क्यालिब्रेसन परिमाण"
+
+msgid "Net Quantity Sold"
+msgstr "खुद बिक्री परिमाण"
+
+msgid "Meter-based Sales Dispense"
+msgstr "मिटर बिक्री वितरण"
+
+msgid "Manual Sales Dispense"
+msgstr "म्यानुअल बिक्री वितरण"
+
+msgid "Sales Cancellation Reversal"
+msgstr "बिक्री खारेजी फिर्ता"
+
+msgid "Calibration / Testing Return (+)"
+msgstr "क्यालिब्रेसन / परीक्षण फिर्ता (+)"
+
+msgid "Evaporation / Dip Loss (-)"
+msgstr "वाष्पीकरण / डिप नोक्सानी (-)"
+
+msgid "Calibration / Dip Gain (+)"
+msgstr "क्यालिब्रेसन / डिप वृद्धि (+)"
+
+msgid "Tanker Receipt / Purchase Delivery"
+msgstr "ट्याङ्कर खरिद दाखिला"
+
+msgid "Initial Opening Stock"
+msgstr "सुरुवाती स्टक मौज्दात"
+
+msgid "Meter-based Dispense"
+msgstr "मिटरमा आधारित बिक्री"
+
+msgid "Manual Sales Entry"
+msgstr "म्यानुअल बिक्री प्रविष्टि"
+
+msgid "QR / Fonepay"
+msgstr "क्यूआर / फोनपे"
+
+msgid "Bank Transfer"
+msgstr "बैंक ट्रान्सफर"
+
+msgid "Cash"
+msgstr "नगद"
+
+msgid "Credit"
+msgstr "उधारो"
+
+msgid "Record Tank Stock Adjustment"
+msgstr "ट्याङ्क स्टक समायोजन दर्ता गर्नुहोस्"
+
+msgid "Auditable Stock Movement Ledger"
+msgstr "लेखापरीक्षण योग्य स्टक लेजर"
+
+msgid "Daily Fuel Sales Register"
+msgstr "दैनिक इन्धन बिक्री दर्ता"
+
+msgid "Fuel Sales Reconciliation"
+msgstr "इन्धन बिक्री मिलान तथा विश्लेषण"
+
+msgid "1. Fuel-Wise Sales Summary"
+msgstr "१. इन्धन अनुसार बिक्री सारांश"
+
+msgid "2. Payment Collection Breakdown"
+msgstr "२. भुक्तानी माध्यम अनुसार असुली"
+
+msgid "3. Nozzle-Wise Sales"
+msgstr "३. नोजल अनुसार बिक्री"
+
+msgid "4. Sale Mechanism (Meter vs Manual)"
+msgstr "४. बिक्री माध्यम (मिटर तथा म्यानुअल)"
+
+msgid "5. Shift-Wise Operational Reconciliation"
+msgstr "५. सिफ्ट अनुसार सञ्चालन मिलान"
+
+msgid "Print Invoice"
+msgstr "बीजक प्रिन्ट गर्नुहोस्"
+
+msgid "Print Reconciliation Report"
+msgstr "मिलान प्रतिवेदन प्रिन्ट गर्नुहोस्"
+
+msgid "Confirm Void & Restore Stock"
+msgstr "खारेज पुष्टि गरी स्टक फिर्ता गर्नुहोस्"
+
+msgid "Record Stock Movement"
+msgstr "स्टक कारोबार दर्ता गर्नुहोस्"
+
+msgid "Filter by Storage Tank"
+msgstr "भण्डारण ट्याङ्क अनुसार फिल्टर"
+
+msgid "Movement Type"
+msgstr "कारोबारको प्रकार"
+
+msgid "Sale Outflow"
+msgstr "बिक्री निष्कासन (-)"
+
+msgid "Purchase Inflow"
+msgstr "खरिद दाखिला (+)"
+
+msgid "Testing Return"
+msgstr "परीक्षण फिर्ता (+)"
+
+msgid "Sale Reversal"
+msgstr "बिक्री फिर्ता (+)"
+
+msgid "Customer & Vehicle Information"
+msgstr "ग्राहक तथा सवारी विवरण"
+
+msgid "Transaction & Dispense Context"
+msgstr "कारोबार तथा वितरण विवरण"
+
+msgid "Product / Description"
+msgstr "इन्धन / विवरण"
+
+msgid "Rate (NPR/L)"
+msgstr "दर (रु/लिटर)"
+
+msgid "Total Amount (NPR)"
+msgstr "कुल रकम (रु)"
+
+msgid "Subtotal"
+msgstr "उप-जम्मा"
+
+msgid "Tax (Included)"
+msgstr "कर (समावेश)"
+
+msgid "Grand Total"
+msgstr "कुल जम्मा रकम"
+
+msgid "Authorized Signature / Seal"
+msgstr "अधिकृत हस्ताक्षर / छाप"
+
+msgid "Shift Supervisor / Manager"
+msgstr "सिफ्ट सुपरभाइजर / प्रबन्धक"
+
+msgid "Assigned Pump Operators / Cashiers"
+msgstr "तोकिएका पम्प अपरेटर तथा क्यासियरहरू"
+
+msgid "Shift Opening Time"
+msgstr "सिफ्ट सुरु समय"
+
+msgid "Shift Closing Time"
+msgstr "सिफ्ट बन्द समय"
+
+msgid "Shift Status"
+msgstr "सिफ्ट स्थिति"
+
+msgid "Approved By"
+msgstr "स्वीकृत गर्ने"
+
+msgid "Approved At"
+msgstr "स्वीकृत समय"
+
+msgid "Shift"
+msgstr "सिफ्ट"
+
+msgid "Shifts"
+msgstr "सिफ्टहरू"
+
+msgid "Meter Reading"
+msgstr "मिटर रिडिङ"
+
+msgid "Fuel Sale"
+msgstr "इन्धन बिक्री"
+
+msgid "Fuel Sales"
+msgstr "इन्धन बिक्रीहरू"
+
+msgid "Storage Tank"
+msgstr "भण्डारण ट्याङ्क"
+
+msgid "Flow Direction"
+msgstr "प्रवाह दिशा"
+
+msgid "Stock In (+)"
+msgstr "दाखिला (+)"
+
+msgid "Stock Out (-)"
+msgstr "निष्कासन (-)"
+
+msgid "Quantity (L)"
+msgstr "परिमाण (लिटर)"
+
+msgid "Tank Opening Balance (L)"
+msgstr "ट्याङ्क सुरु मौज्दात (लिटर)"
+
+msgid "Tank Closing Balance (L)"
+msgstr "ट्याङ्क अन्तिम मौज्दात (लिटर)"
+
+msgid "+ Purchases (L)"
+msgstr "+ खरिद (लि)"
+
+msgid "+ Returns (L)"
+msgstr "+ फिर्ता (लि)"
+
+msgid "+/- Adjustments (L)"
+msgstr "+/- समायोजन (लि)"
+
+msgid "- Dispensed (L)"
+msgstr "- बिक्री (लि)"
+
+msgid "7-day volume trends across Petrol (MS) and Diesel (HSD)."
+msgstr "पेट्रोल (MS) र डिजेल (HSD) को ७ दिने बिक्री मात्रा प्रवृत्ति।"
+
+msgid "A documented cancellation reason is required."
+msgstr "कागजी रद्दको कारण खुलाउन अनिवार्य छ।"
+
+msgid "A documented reason is mandatory when recording manual sales."
+msgstr "म्यानुअल बिक्री प्रविष्टि गर्दा स्पष्ट कारण अनिवार्य छ।"
+
+msgid ""
+"A double-entry Stock Movement (SALE_REVERSAL) will be recorded permanently "
+"in the audit ledger."
+msgstr ""
+"लेखा परीक्षण खातामा दोहोरो प्रविष्टि स्टक मुभमेन्ट (बिक्री फिर्ता) स्थायी "
+"रूपमा रेकर्ड हुनेछ।"
+
+msgid "A double-entry voucher must contain at least 2 line items."
+msgstr "दोहोरो प्रविष्टि भौचरमा कम्तीमा २ वटा लाइन हुनुपर्छ।"
+
+msgid ""
+"A mandatory remark detailing the dip stick reading, tank water test, or "
+"meter calibration note is required."
+msgstr ""
+"डिप स्टिक रिडिङ, ट्याङ्की पानी परीक्षण वा मिटर क्यालिब्रेसन सम्बन्धी कैफियत "
+"अनिवार्य छ।"
+
+msgid "A single journal line cannot have both Debit and Credit amounts."
+msgstr "एउटै जर्नल लाइनमा डेबिट र क्रेडिट दुवै रकम हुन सक्दैन।"
+
+msgid "APPROVED"
+msgstr "स्वीकृत"
+
+msgid "Account"
+msgstr "खाता"
+
+msgid "Account Classification"
+msgstr "खाता वर्गीकरण"
+
+msgid "Account Code & Name"
+msgstr "खाता कोड र नाम"
+
+msgid "Account Code / Number"
+msgstr "खाता कोड / नम्बर"
+
+msgid "Account Name"
+msgstr "खाताको नाम"
+
+msgid "Account Name (EN)"
+msgstr "खाताको नाम (अंग्रेजी)"
+
+msgid "Account Name (English)"
+msgstr "खाताको नाम (अंग्रेजी)"
+
+msgid "Account Name (NE)"
+msgstr "खाताको नाम (नेपाली)"
+
+msgid "Account Name (Nepali)"
+msgstr "खाताको नाम (नेपाली)"
+
+msgid "Account Status"
+msgstr "खाता स्थिति"
+
+msgid "Accounting & COA"
+msgstr "लेखा तथा खाता सूची (COA)"
+
+msgid "Accounting Basis: Double-Entry Ledger with Fuel COGS"
+msgstr "लेखा आधार: इन्धन बिक्री लागत सहितको दोहोरो प्रविष्टि खाता"
+
+msgid "Accounts"
+msgstr "खाताहरू"
+
+msgid "Accounts Receivable (Credit)"
+msgstr "उधारो प्राप्य रकम (AR)"
+
+msgid "Across all verified active invoices"
+msgstr "सबै प्रमाणित सक्रिय बिलहरूबाट"
+
+msgid "Action"
+msgstr "कार्य"
+
+msgid "Active / Dispensing"
+msgstr "सक्रिय / वितरण भइरहेको"
+
+msgid "Active / Open"
+msgstr "सक्रिय / खुला"
+
+msgid "Active / Operational"
+msgstr "सक्रिय / सञ्चालनमा"
+
+msgid "Active Shift"
+msgstr "सक्रिय शिफ्ट"
+
+msgid "Active Status"
+msgstr "सक्रिय स्थिति"
+
+msgid "Actual Stock (L)"
+msgstr "वास्तविक स्टक (लि)"
+
+msgid "Actual physical cash counted in drawer at shift end"
+msgstr "शिफ्टको अन्त्यमा गनिएको वास्तविक भौतिक नगद"
+
+msgid "Add Dispensing Nozzle"
+msgstr "नोजल थप्नुहोस्"
+
+msgid "Add Dispensing Pump"
+msgstr "पम्प थप्नुहोस्"
+
+msgid "Add Nepal Oil Corporation depot or lubricant partner."
+msgstr "नेपाल आयल निगम डिपो वा आपूर्तिकर्ता थप्नुहोस्।"
+
+msgid "Add New User / Staff Member"
+msgstr "नयाँ प्रयोगकर्ता / कर्मचारी थप्नुहोस्"
+
+msgid "Add Reading"
+msgstr "रिडिङ थप्नुहोस्"
+
+msgid "Add corporate transporter, contractor, or commercial fleet client."
+msgstr "यातायात व्यवसायी, निर्माण व्यवसायी वा व्यावसायिक ग्राहक थप्नुहोस्।"
+
+msgid "Address (English)"
+msgstr "ठेगाना (अंग्रेजी)"
+
+msgid "Address (Nepali)"
+msgstr "ठेगाना (नेपाली)"
+
+msgid "Adequate Stock"
+msgstr "पर्याप्त स्टक"
+
+msgid "After (L)"
+msgstr "पछि (लि)"
+
+msgid "Against Purchase Invoice (Optional)"
+msgstr "खरिद बिल अनुसार (वैकल्पिक)"
+
+msgid "All Fuels"
+msgstr "सबै इन्धन"
+
+msgid "All Movement Types"
+msgstr "सबै प्रकारका मुभमेन्ट"
+
+msgid "All Nozzles"
+msgstr "सबै नोजलहरू"
+
+msgid "All Payments"
+msgstr "सबै भुक्तानीहरू"
+
+msgid "All Storage Tanks"
+msgstr "सबै भण्डारण ट्याङ्कीहरू"
+
+msgid "All Types"
+msgstr "सबै प्रकार"
+
+msgid "Amount"
+msgstr "रकम"
+
+msgid "Amount (NPR)"
+msgstr "रकम (ने.रु.)"
+
+msgid "Amount Paid (NPR)"
+msgstr "भुक्तानी गरिएको रकम (ने.रु.)"
+
+msgid "Amount Paid to Suppliers"
+msgstr "आपूर्तिकर्तालाई भुक्तान गरिएको रकम"
+
+msgid "Amount Received (NPR)"
+msgstr "प्राप्त रकम (ने.रु.)"
+
+msgid "Approval"
+msgstr "स्वीकृति"
+
+msgid "Approval Status"
+msgstr "स्वीकृति स्थिति"
+
+msgid "Approve & Inward Fuel Stock"
+msgstr "स्वीकृत गरी इन्धन दाखिला गर्नुहोस्"
+
+msgid "Approve & Reconcile"
+msgstr "स्वीकृत र मिलान गर्नुहोस्"
+
+msgid ""
+"Approve delivery? This will add fuel stock into the tank and post accounting"
+" ledger entries."
+msgstr ""
+"इन्धन दाखिला स्वीकृत गर्ने? यसले ट्याङ्कीमा स्टक थप्नेछ र लेखा प्रविष्टि "
+"पोस्ट गर्नेछ।"
+
+msgid "Approved & Effective"
+msgstr "स्वीकृत र लागू"
+
+msgid "Approved & Inward Delivered"
+msgstr "स्वीकृत र दाखिला भएको"
+
+msgid "Approved & Reconciled"
+msgstr "स्वीकृत र मिलान भएको"
+
+msgid "Approved Credit Limit"
+msgstr "स्वीकृत उधारो सीमा"
+
+msgid "Approved Purchases"
+msgstr "स्वीकृत खरिदहरू"
+
+msgid "Approved on"
+msgstr "स्वीकृत मिति"
+
+msgid "Asset / सम्पत्ति"
+msgstr "सम्पत्ति (Asset)"
+
+msgid "Assets"
+msgstr "सम्पत्तिहरू"
+
+msgid "Assets (सम्पत्ति)"
+msgstr "सम्पत्ति (Assets)"
+
+msgid "Assign shift supervisor, operators on duty, and opening cash float."
+msgstr "शिफ्ट सुपरभाइजर, खटिएका कर्मचारी र सुरुको नगद तोक्नुहोस्।"
+
+msgid "Audit Remarks / Notes"
+msgstr "लेखापरीक्षण कैफियत / टिप्पणी"
+
+msgid "Audit Variance Check"
+msgstr "लेखापरीक्षण फरक जाँच"
+
+msgid ""
+"Auditable daily fuel sales invoices across Petrol (MS) and Diesel (HSD), "
+"cash and credit transactions."
+msgstr ""
+"पेट्रोल र डिजेलको दैनिक बिक्री बिलहरू, नगद र उधारो कारोबारको लेखापरीक्षण "
+"विवरण।"
+
+msgid ""
+"Auditable underground tank stock reconciliation with physical dip "
+"comparisons and loss tracking."
+msgstr "भूमिगत ट्याङ्कीको भौतिक डिप मापन र स्टक नोक्सानी मिलान विवरण।"
+
+msgid "Audited Tank Stock Adjustment Rules"
+msgstr "ट्याङ्की स्टक समायोजन नियमहरू"
+
+msgid ""
+"Audited reversal of sales transaction and physical fuel stock restoration."
+msgstr "बिक्री कारोबारको रद्द र ट्याङ्की स्टक पुनःस्थापना।"
+
+msgid "Authentication and Authorization"
+msgstr "प्रमाणीकरण र अधिकार"
+
+msgid "Authorized By (for Manual Entry)"
+msgstr "स्वीकृत गर्ने अधिकारी (म्यानुअल प्रविष्टिका लागि)"
+
+msgid "Authorized by"
+msgstr "स्वीकृत गर्ने"
+
+msgid "Available"
+msgstr "उपलब्ध"
+
+msgid "BS"
+msgstr "वि.सं."
+
+msgid "Back to Cash Book"
+msgstr "नगद खातामा फर्कनुहोस्"
+
+msgid "Back to Dashboard"
+msgstr "ड्यासबोर्डमा फर्कनुहोस्"
+
+msgid "Back to Expenses"
+msgstr "खर्च सूचीमा फर्कनुहोस्"
+
+msgid "Back to Journal Register"
+msgstr "जर्नल दर्तामा फर्कनुहोस्"
+
+msgid "Back to Purchase Register"
+msgstr "खरिद दर्तामा फर्कनुहोस्"
+
+msgid "Back to Sales Register"
+msgstr "बिक्री दर्तामा फर्कनुहोस्"
+
+msgid "Back to Shift"
+msgstr "शिफ्टमा फर्कनुहोस्"
+
+msgid "Back to Shift Overview"
+msgstr "शिफ्ट विवरणमा फर्कनुहोस्"
+
+msgid "Back to Shifts"
+msgstr "शिफ्टहरूमा फर्कनुहोस्"
+
+msgid "Back to Sign In"
+msgstr "लगइनमा फर्कनुहोस्"
+
+msgid "Back to Staff List"
+msgstr "कर्मचारी सूचीमा फर्कनुहोस्"
+
+msgid "Back to Stock Ledger"
+msgstr "स्टक खातामा फर्कनुहोस्"
+
+msgid "Badge Style Class"
+msgstr "ब्याच शैली"
+
+msgid "Balance (NPR)"
+msgstr "बाँकी मौज्दात (ने.रु.)"
+
+msgid "Balance Sheet"
+msgstr "वासलात (ब्यालेन्स सिट)"
+
+msgid "Balance Sheet (Assets = Liab + Eq)"
+msgstr "वासलात (सम्पत्ति = दायित्व + पूँजी)"
+
+msgid "Balance Sheet (Statement of Financial Position)"
+msgstr "वासलात (वित्तीय स्थिति विवरण)"
+
+msgid "Balanced Total"
+msgstr "बराबर कुल"
+
+msgid "Balanced Trial Balance (Dr == Cr)"
+msgstr "सन्तुलित परीक्षण सूची (Dr == Cr)"
+
+msgid "Bank / QR Digital"
+msgstr "बैंक / डिजिटल QR"
+
+msgid "Bank Cash Deposit / Withdrawal"
+msgstr "बैंक नगद जम्मा / झिक्ने"
+
+msgid "Bank Cheque"
+msgstr "बैंक चेक"
+
+msgid "Bank Cheque # / Fonepay Txn ID"
+msgstr "बैंक चेक नं. / फोनपे ट्रान्जिक्सन आईडी"
+
+msgid "Bank Deposit / Withdrawal"
+msgstr "बैंक जम्मा / भुक्तानी"
+
+msgid "Bank Deposit Slip # / Cheque #"
+msgstr "बैंक भौचर नं. / चेक नं."
+
+msgid "Bank Ref / Cheque"
+msgstr "बैंक सन्दर्भ / चेक"
+
+msgid "Bank Reference / Cheque #"
+msgstr "बैंक सन्दर्भ / चेक नं."
+
+msgid "Bank Reference / Cheque / Txn ID"
+msgstr "बैंक सन्दर्भ / चेक / ट्रान्जिक्सन आईडी"
+
+msgid "Bank Slip / Cheque Reference"
+msgstr "बैंक भौचर / चेक सन्दर्भ"
+
+msgid "Bank Transfer (ConnectIPS / RTGS)"
+msgstr "बैंक ट्रान्सफर (ConnectIPS / RTGS)"
+
+msgid "Bank Transfer (IPS/RTGS)"
+msgstr "बैंक ट्रान्सफर (IPS/RTGS)"
+
+msgid "Bank Transfer / Cheque (बैंक/चेक)"
+msgstr "बैंक ट्रान्सफर / चेक"
+
+msgid ""
+"Basista Oil Traders • Executive Real-Time Operations & Accounting Dashboard"
+msgstr "बसिस्टा आयल ट्रेडर्स • सञ्चालन तथा वित्तीय ड्यासबोर्ड"
+
+msgid "Before (L)"
+msgstr "पहिले (लि)"
+
+msgid "Bill # / Cheque #"
+msgstr "बिल नं. / चेक नं."
+
+msgid "Billed Amount"
+msgstr "बिल रकम"
+
+msgid "Billed Litres"
+msgstr "बिल गरिएको परिमाण (लिटर)"
+
+msgid ""
+"Bilingual petrol station management platform engineered for Basista Oil "
+"Traders, Nepal."
+msgstr ""
+"बसिस्टा आयल ट्रेडर्स, नेपालका लागि निर्मित द्विभाषी पेट्रोल पम्प व्यवस्थापन "
+"प्रणाली।"
+
+msgid "Book Value"
+msgstr "किताबी मौज्दात"
+
+msgid "Breakdown by customer accounts, payment terms, and aging exposure."
+msgstr "ग्राहक अनुसार बाँकी हिसाब, भुक्तानी सर्त र उमेर विश्लेषण।"
+
+msgid ""
+"Breakdown by shift, pump, nozzle, fuel product, payment method, and "
+"operator."
+msgstr "शिफ्ट, पम्प, नोजल, इन्धन, भुक्तानी विधि र अपरेटर अनुसारको विवरण।"
+
+msgid ""
+"Breakdown of physical cash, bank deposits, withdrawals, and current drawer "
+"float."
+msgstr "भौतिक नगद, बैंक जम्मा, बैंकबाट झिकेको र हालको नगद मौज्दात।"
+
+msgid "Bulk Tank Deliveries"
+msgstr "ट्याङ्कर खरिद दाखिला"
+
+msgid "CALIBRATION"
+msgstr "क्यालिब्रेसन परीक्षण"
+
+msgid "Calendar Display"
+msgstr "पात्रो प्रदर्शन"
+
+msgid "Calibration"
+msgstr "क्यालिब्रेसन"
+
+msgid "Calibration / Return"
+msgstr "क्यालिब्रेसन / फिर्ता"
+
+msgid "Capacity"
+msgstr "क्षमता"
+
+msgid "Capacity (L)"
+msgstr "क्षमता (लिटर)"
+
+msgid "Capacity: %(cap)s L"
+msgstr "क्षमता: %(cap)s लिटर"
+
+msgid "Cash & Bank"
+msgstr "नगद तथा बैंक"
+
+msgid "Cash (नगद)"
+msgstr "नगद"
+
+msgid "Cash Balance"
+msgstr "नगद मौज्दात"
+
+msgid "Cash Book"
+msgstr "नगद खाता"
+
+msgid "Cash Book (नगद खाता)"
+msgstr "नगद खाता (क्यास बुक)"
+
+msgid "Cash Book & Physical Drawer"
+msgstr "नगद खाता तथा भौतिक काउन्टर दराज"
+
+msgid "Cash Collected"
+msgstr "संकलित नगद"
+
+msgid "Cash Drawer Balance"
+msgstr "दराजको नगद मौज्दात"
+
+msgid "Cash In Hand"
+msgstr "हातमै रहेको नगद"
+
+msgid "Cash Inflow"
+msgstr "नगद प्राप्ति"
+
+msgid "Cash Outflow"
+msgstr "नगद भुक्तानी"
+
+msgid "Cash Sales"
+msgstr "नगद बिक्री"
+
+msgid "Category"
+msgstr "वर्ग"
+
+msgid "Category Name"
+msgstr "खर्च वर्गको नाम"
+
+msgid "Chart of Accounts"
+msgstr "खाताहरूको सूची (COA)"
+
+msgid "Chart of Accounts (COA)"
+msgstr "खाताहरूको सूची (COA)"
+
+msgid "Check Stock Balance"
+msgstr "स्टक मौज्दात जाँच गर्नुहोस्"
+
+msgid "Clear Filters"
+msgstr "फिल्टर हटाउनुहोस्"
+
+msgid "Closing Balance"
+msgstr "अन्तिम मौज्दात"
+
+msgid "Closing Cash"
+msgstr "अन्तिम नगद"
+
+msgid "Closing Dip (cm)"
+msgstr "अन्तिम डिप (सेमी)"
+
+msgid "Closing Meter"
+msgstr "अन्तिम मिटर"
+
+msgid "Closing Reading"
+msgstr "अन्तिम रिडिङ"
+
+msgid "Closing Stock"
+msgstr "अन्तिम स्टक"
+
+msgid "Company / Client Name"
+msgstr "कम्पनी / ग्राहकको नाम"
+
+msgid "Credit (Cr)"
+msgstr "क्रेडिट (Cr)"
+
+msgid "Credit (उधारो)"
+msgstr "क्रेडिट (उधारो)"
+
+msgid "Credit Limit"
+msgstr "उधारो सीमा"
+
+msgid "Credit Limit (NPR)"
+msgstr "उधारो सीमा (ने.रु.)"
+
+msgid "Credit Outstanding"
+msgstr "बाँकी उधारो"
+
+msgid "Credit Sales"
+msgstr "उधारो बिक्री"
+
+msgid "Current Balance"
+msgstr "हालको मौज्दात"
+
+msgid "Current Balance (NPR)"
+msgstr "हालको बाँकी (ने.रु.)"
+
+msgid "Current Price"
+msgstr "हालको मूल्य"
+
+msgid "Current Reading"
+msgstr "हालको रिडिङ"
+
+msgid "Current Stock (L)"
+msgstr "हालको स्टक (लिटर)"
+
+msgid "Customer"
+msgstr "ग्राहक"
+
+msgid "Customer Account Statement"
+msgstr "ग्राहक खाता विवरण"
+
+msgid "Customer Code"
+msgstr "ग्राहक कोड"
+
+msgid "Customer Credit Ledger"
+msgstr "ग्राहक उधारो खाता"
+
+msgid "Customer Ledger"
+msgstr "ग्राहक खाता"
+
+msgid "Customer Name"
+msgstr "ग्राहकको नाम"
+
+msgid "Customer Outstanding"
+msgstr "ग्राहकको बाँकी उधारो"
+
+msgid "Customer Payment"
+msgstr "ग्राहक भुक्तानी"
+
+msgid "Customers"
+msgstr "ग्राहकहरू"
+
+msgid "Daily Expenses"
+msgstr "दैनिक खर्चहरू"
+
+msgid "Daily Sales"
+msgstr "दैनिक बिक्री"
+
+msgid "Date"
+msgstr "मिति"
+
+msgid "Date & Time"
+msgstr "मिति र समय"
+
+msgid "Date (AD)"
+msgstr "मिति (ई.सं.)"
+
+msgid "Date (BS)"
+msgstr "मिति (वि.सं.)"
+
+msgid "Debit"
+msgstr "डेबिट"
+
+msgid "Debit (Dr)"
+msgstr "डेबिट (Dr)"
+
+msgid "Debit (Dr) / Credit (Cr)"
+msgstr "डेबिट (Dr) / क्रेडिट (Cr)"
+
+msgid "Delivery Notes"
+msgstr "डेलिभरी टिप्पणी"
+
+msgid "Description"
+msgstr "विवरण"
+
+msgid "Diesel"
+msgstr "डिजेल"
+
+msgid "Diesel (HSD)"
+msgstr "डिजेल (HSD)"
+
+msgid "Difference"
+msgstr "फरक"
+
+msgid "Dip Level"
+msgstr "डिप स्तर"
+
+msgid "Dip Reading"
+msgstr "डिप रिडिङ"
+
+msgid "Direct Expense"
+msgstr "प्रत्यक्ष खर्च"
+
+msgid "Discrepancy"
+msgstr "फरक / कैफियत"
+
+msgid "Double-Entry Accounting"
+msgstr "दोहोरो लेखा प्रणाली"
+
+msgid "Due Date"
+msgstr "भुक्तानी मिति"
+
+msgid "Duty Staff"
+msgstr "खटिएका कर्मचारी"
+
+msgid "Effective Date"
+msgstr "लागू मिति"
+
+msgid "Email"
+msgstr "इमेल"
+
+msgid "Employee"
+msgstr "कर्मचारी"
+
+msgid "Employee Assignment"
+msgstr "कर्मचारी खटनपटन"
+
+msgid "Equity"
+msgstr "पूँजी (इक्विटी)"
+
+msgid "Equity / पूँजी"
+msgstr "पूँजी (Equity)"
+
+msgid "Excel Export"
+msgstr "एक्सेल डाउनलोड"
+
+msgid "Expense"
+msgstr "खर्च"
+
+msgid "Expense Category"
+msgstr "खर्च वर्ग"
+
+msgid "Expense Details"
+msgstr "खर्च विवरण"
+
+msgid "Expense Vouchers"
+msgstr "खर्च भौचरहरू"
+
+msgid "Expenses"
+msgstr "खर्चहरू"
+
+msgid "Export Excel"
+msgstr "एक्सेल डाउनलोड"
+
+msgid "Export PDF"
+msgstr "पीडीएफ डाउनलोड"
+
+msgid "Financial Period"
+msgstr "आर्थिक वर्ष / अवधि"
+
+msgid "Financial Reports"
+msgstr "वित्तीय प्रतिवेदनहरू"
+
+msgid "Financial Statements"
+msgstr "वित्तीय विवरणहरू"
+
+msgid "Fuel Dispensed"
+msgstr "वितरित इन्धन"
+
+msgid "Fuel Price"
+msgstr "इन्धन मूल्य"
+
+msgid "Fuel Price History"
+msgstr "इन्धन मूल्य इतिहास"
+
+msgid "Fuel Purchase"
+msgstr "इन्धन खरिद"
+
+msgid "Fuel Purchases"
+msgstr "इन्धन खरिदहरू"
+
+msgid "Fuel Sales Summary"
+msgstr "इन्धन बिक्री सारांश"
+
+msgid "Fuel Tank"
+msgstr "इन्धन ट्याङ्की"
+
+msgid "Fuel Type"
+msgstr "इन्धनको प्रकार"
+
+msgid "Gross Profit"
+msgstr "कुल नाफा (Gross Profit)"
+
+msgid "Gross Sales"
+msgstr "कुल बिक्री"
+
+msgid "Income Statement"
+msgstr "नाफा नोक्सान हिसाब (P&L)"
+
+msgid "Income Statement (Profit & Loss)"
+msgstr "नाफा नोक्सान हिसाब विवरण (P&L)"
+
+msgid "Inflow"
+msgstr "प्राप्ति"
+
+msgid "Inventory"
+msgstr "स्टक / मौज्दात"
+
+msgid "Inventory & Stock Movement"
+msgstr "स्टक तथा मौज्दात मुभमेन्ट"
+
+msgid "Inventory Reconciliation"
+msgstr "स्टक मिलान प्रतिवेदन"
+
+msgid "Invoice #"
+msgstr "बिल नं."
+
+msgid "Invoice Date"
+msgstr "बिल मिति"
+
+msgid "Invoice Number"
+msgstr "बिल नम्बर"
+
+msgid "Invoice Total"
+msgstr "बिल जम्मा"
+
+msgid "Inward Delivery"
+msgstr "दाखिला डेलिभरी"
+
+msgid "Journal Entries"
+msgstr "जर्नल प्रविष्टिहरू"
+
+msgid "Journal Entry"
+msgstr "जर्नल भौचर"
+
+msgid "Journal Register"
+msgstr "जर्नल दर्ता"
+
+msgid "Ledger"
+msgstr "खाता (लेजर)"
+
+msgid "Liabilities"
+msgstr "दायित्वहरू"
+
+msgid "Liabilities / दायित्व"
+msgstr "दायित्व (Liabilities)"
+
+msgid "Litres"
+msgstr "लिटर"
+
+msgid "Manual Fuel Sale"
+msgstr "म्यानुअल इन्धन बिक्री"
+
+msgid "Manual Sale"
+msgstr "म्यानुअल बिक्री"
+
+msgid "Net Loss"
+msgstr "खुद नोक्सान"
+
+msgid "Net Operating Profit"
+msgstr "खुद सञ्चालन नाफा"
+
+msgid "Net Profit"
+msgstr "खुद नाफा (Net Profit)"
+
+msgid "Net Profit / Loss"
+msgstr "खुद नाफा / नोक्सान"
+
+msgid "Net Sales"
+msgstr "खुद बिक्री"
+
+msgid "Nozzle"
+msgstr "नोजल"
+
+msgid "Nozzle Meter Readings"
+msgstr "नोजल मिटर रिडिङहरू"
+
+msgid "Nozzles"
+msgstr "नोजलहरू"
+
+msgid "Operating Expenses"
+msgstr "सञ्चालन खर्चहरू"
+
+msgid "Operating Profit"
+msgstr "सञ्चालन नाफा"
+
+msgid "Opening Balance"
+msgstr "सुरु मौज्दात"
+
+msgid "Opening Cash"
+msgstr "सुरुको नगद"
+
+msgid "Opening Meter"
+msgstr "सुरु मिटर"
+
+msgid "Opening Reading"
+msgstr "सुरु रिडिङ"
+
+msgid "Outstanding"
+msgstr "बाँकी रकम"
+
+msgid "Outstanding Balance"
+msgstr "बाँकी मौज्दात"
+
+msgid "Outflow"
+msgstr "भुक्तानी"
+
+msgid "PAN / VAT"
+msgstr "पान / भ्याट"
+
+msgid "PDF Export"
+msgstr "पीडीएफ डाउनलोड"
+
+msgid "Paid Amount"
+msgstr "भुक्तान रकम"
+
+msgid "Payment Details"
+msgstr "भुक्तानी विवरण"
+
+msgid "Payment Method"
+msgstr "भुक्तानी विधि"
+
+msgid "Payment Mode"
+msgstr "भुक्तानी प्रकार"
+
+msgid "Payment Status"
+msgstr "भुक्तानी स्थिति"
+
+msgid "Payments"
+msgstr "भुक्तानीहरू"
+
+msgid "Petrol"
+msgstr "पेट्रोल"
+
+msgid "Petrol (MS)"
+msgstr "पेट्रोल (MS)"
+
+msgid "Physical Cash Count"
+msgstr "काउन्टरमा भौतिक नगद गणना"
+
+msgid "Physical Dip Reading"
+msgstr "भौतिक डिप मापन"
+
+msgid "Print Statement"
+msgstr "विवरण प्रिन्ट गर्नुहोस्"
+
+msgid "Profit & Loss"
+msgstr "नाफा नोक्सान"
+
+msgid "Profit & Loss Statement"
+msgstr "नाफा नोक्सान हिसाब विवरण"
+
+msgid "Pump"
+msgstr "पम्प"
+
+msgid "Pump & Nozzle Setup"
+msgstr "पम्प तथा नोजल सेटअप"
+
+msgid "Pump Meter Readings"
+msgstr "पम्प मिटर रिडिङहरू"
+
+msgid "Pumps"
+msgstr "पम्पहरू"
+
+msgid "Pumps & Nozzles"
+msgstr "पम्प तथा नोजलहरू"
+
+msgid "Purchase Details"
+msgstr "खरिद विवरण"
+
+msgid "Purchase History"
+msgstr "खरिद इतिहास"
+
+msgid "Purchase Invoice"
+msgstr "खरिद बिल"
+
+msgid "Purchase Orders"
+msgstr "खरिद आदेशहरू"
+
+msgid "Purchases"
+msgstr "खरिदहरू"
+
+msgid "Purchases & Inward"
+msgstr "खरिद तथा दाखिला"
+
+msgid "Quantity"
+msgstr "परिमाण"
+
+msgid "Quantity (Litres)"
+msgstr "परिमाण (लिटर)"
+
+msgid "Quantity Sold"
+msgstr "बिक्री परिमाण"
+
+msgid "Rate"
+msgstr "दर"
+
+msgid "Rate (NPR)"
+msgstr "दर (ने.रु.)"
+
+msgid "Receipt #"
+msgstr "रसिद नं."
+
+msgid "Receiving Tank"
+msgstr "दाखिला हुने ट्याङ्की"
+
+msgid "Reconciliation"
+msgstr "मिलान (Reconciliation)"
+
+msgid "Record Cash Transaction"
+msgstr "नगद कारोबार प्रविष्टि गर्नुहोस्"
+
+msgid "Record Customer Payment"
+msgstr "ग्राहक भुक्तानी प्रविष्टि गर्नुहोस्"
+
+msgid "Record Expense"
+msgstr "खर्च प्रविष्टि गर्नुहोस्"
+
+msgid "Record Fuel Purchase"
+msgstr "इन्धन खरिद प्रविष्टि गर्नुहोस्"
+
+msgid "Record Payment"
+msgstr "भुक्तानी प्रविष्टि गर्नुहोस्"
+
+msgid "Record Supplier Payment"
+msgstr "आपूर्तिकर्ता भुक्तानी प्रविष्टि गर्नुहोस्"
+
+msgid "Remaining Capacity"
+msgstr "बाँकी क्षमता"
+
+msgid "Report Type"
+msgstr "प्रतिवेदन प्रकार"
+
+msgid "Reports"
+msgstr "प्रतिवेदनहरू"
+
+msgid "Revenue"
+msgstr "आम्दानी (राजस्व)"
+
+msgid "Revenue (आम्दानी)"
+msgstr "आम्दानी (Revenue)"
+
+msgid "Reversal Journal Entry"
+msgstr "उल्टो जर्नल प्रविष्टि (Reversal)"
+
+msgid "SALE"
+msgstr "बिक्री"
+
+msgid "SALE_METER"
+msgstr "मिटर बिक्री"
+
+msgid "SALE_MANUAL"
+msgstr "म्यानुअल बिक्री"
+
+msgid "SALE_REVERSAL"
+msgstr "बिक्री फिर्ता"
+
+msgid "Sales"
+msgstr "बिक्री"
+
+msgid "Sales & Revenue"
+msgstr "बिक्री तथा आम्दानी"
+
+msgid "Sales Amount"
+msgstr "बिक्री रकम"
+
+msgid "Sales Invoice"
+msgstr "बिक्री बिल"
+
+msgid "Sales Invoices"
+msgstr "बिक्री बिलहरू"
+
+msgid "Sales Register"
+msgstr "बिक्री दर्ता"
+
+msgid "Sales Report"
+msgstr "बिक्री प्रतिवेदन"
+
+msgid "Shift Details"
+msgstr "शिफ्ट विवरण"
+
+msgid "Shift Handover"
+msgstr "शिफ्ट हस्तान्तरण"
+
+msgid "Shift Log"
+msgstr "शिफ्ट लग"
+
+msgid "Shift Management"
+msgstr "शिफ्ट व्यवस्थापन"
+
+msgid "Shift Summary"
+msgstr "शिफ्ट सारांश"
+
+msgid "Station Cash Book"
+msgstr "स्टेसन नगद खाता"
+
+msgid "Station Configuration"
+msgstr "स्टेसन संरचना"
+
+msgid "Stock Adjustment"
+msgstr "स्टक समायोजन"
+
+msgid "Stock In"
+msgstr "स्टक दाखिला"
+
+msgid "Stock Level"
+msgstr "स्टक अवस्था"
+
+msgid "Stock Movement"
+msgstr "स्टक मुभमेन्ट"
+
+msgid "Stock Movement Ledger"
+msgstr "स्टक मुभमेन्ट खाता"
+
+msgid "Stock Out"
+msgstr "स्टक निकासी"
+
+msgid "Stock Reconciliation"
+msgstr "स्टक मिलान"
+
+msgid "Supplier"
+msgstr "आपूर्तिकर्ता"
+
+msgid "Supplier Ledger"
+msgstr "आपूर्तिकर्ता खाता"
+
+msgid "Supplier Name"
+msgstr "आपूर्तिकर्ताको नाम"
+
+msgid "Supplier Payment"
+msgstr "आपूर्तिकर्ता भुक्तानी"
+
+msgid "Suppliers"
+msgstr "आपूर्तिकर्ताहरू"
+
+msgid "Tank"
+msgstr "ट्याङ्की"
+
+msgid "Tank Capacity"
+msgstr "ट्याङ्की क्षमता"
+
+msgid "Tank Dip Reading"
+msgstr "ट्याङ्की डिप रिडिङ"
+
+msgid "Tank Reconciliation"
+msgstr "ट्याङ्की स्टक मिलान"
+
+msgid "Tank Stock"
+msgstr "ट्याङ्की स्टक"
+
+msgid "Tanks"
+msgstr "ट्याङ्कीहरू"
+
+msgid "Total"
+msgstr "जम्मा"
+
+msgid "Total Amount"
+msgstr "कुल रकम"
+
+msgid "Total Credit"
+msgstr "कुल क्रेडिट"
+
+msgid "Total Debit"
+msgstr "कुल डेबिट"
+
+msgid "Total Expenses"
+msgstr "कुल खर्च"
+
+msgid "Total Litres"
+msgstr "कुल लिटर"
+
+msgid "Total Purchases"
+msgstr "कुल खरिद"
+
+msgid "Total Sales"
+msgstr "कुल बिक्री"
+
+msgid "Transaction Date"
+msgstr "कारोबार मिति"
+
+msgid "Trial Balance"
+msgstr "सन्तुलन परीक्षण (ट्रायल ब्यालेन्स)"
+
+msgid "Unit Price"
+msgstr "प्रति एकाइ मूल्य"
+
+msgid "User"
+msgstr "प्रयोगकर्ता"
+
+msgid "Users"
+msgstr "प्रयोगकर्ताहरू"
+
+msgid "VAT"
+msgstr "भ्याट"
+
+msgid "VAT (13%)"
+msgstr "भ्याट (१३%)"
+
+msgid "VAT Amount"
+msgstr "भ्याट रकम"
+
+msgid "Variance"
+msgstr "फरक (Variance)"
+
+msgid "View Details"
+msgstr "विवरण हेर्नुहोस्"
+
+msgid "View Statement"
+msgstr "खाता हेर्नुहोस्"
+
+msgid "Voucher #"
+msgstr "भौचर नं."
+
+msgid "Voucher Number"
+msgstr "भौचर नम्बर"
+
+msgid "Audit Trail"
+msgstr "लेखापरीक्षण विवरण"
+
+msgid "Security & Transaction Audit Trail"
+msgstr "सुरक्षा तथा कारोबार लेखापरीक्षण विवरण"
+
+msgid "Tamper-Evident"
+msgstr "छेडछाड-रहित सुरक्षित"
+
+msgid ""
+"Tamper-evident, immutable system activity ledger. Accessible exclusively to "
+"Owner."
+msgstr ""
+"छेडछाड-रहित, स्थायी प्रणाली गतिविधि खाता। प्रोप्राइटर/मालिकका लागि मात्र "
+"पहुँचयोग्य।"
+
+msgid "System Security & Operational Audit Log"
+msgstr "प्रणाली सुरक्षा तथा सञ्चालन लेखापरीक्षण लग"
+
+msgid "Audit Log Entry"
+msgstr "लेखापरीक्षण प्रविष्टि"
+
+msgid "Audit Log Entries"
+msgstr "लेखापरीक्षण प्रविष्टिहरू"
+
+msgid "Action Type"
+msgstr "कार्य प्रकार"
+
+msgid "All Actions"
+msgstr "सबै कार्यहरू"
+
+msgid "Model / Target"
+msgstr "मोडेल / लक्ष्य"
+
+msgid "Target Entity"
+msgstr "लक्षित निकाय"
+
+msgid "Record ID"
+msgstr "रेकर्ड नं."
+
+msgid "Client IP"
+msgstr "आईपी ठेगाना"
+
+msgid "Reason / Details"
+msgstr "कारण / विवरण"
+
+msgid "Reason for Adjustment / Audit Note"
+msgstr "समायोजनको कारण / लेखापरीक्षण कैफियत"
+
+msgid "No audit log entries recorded yet."
+msgstr "हालसम्म कुनै लेखापरीक्षण प्रविष्टि रेकर्ड गरिएको छैन।"
+
+msgid ""
+"Security Lockout: Too many failed login attempts! Account access temporarily"
+" locked. Please wait %(mins)s minute(s) before trying again."
+msgstr ""
+"सुरक्षा लक: धेरै पटक गलत पासवर्ड प्रयास गरियो! खाता अस्थायी रूपमा बन्द "
+"गरिएको छ। कृपया %(mins)s मिनेट पछि प्रयास गर्नुहोस्।"
+
+msgid "Only an Owner can assign the Owner role."
+msgstr "प्रोप्राइटर/मालिकले मात्र मालिक भूमिका तोक्न सक्नुहुन्छ।"
+
+msgid "Only an Owner can assign or modify the Owner role."
+msgstr ""
+"प्रोप्राइटर/मालिकले मात्र मालिक भूमिका तोक्न वा संशोधन गर्न सक्नुहुन्छ।"

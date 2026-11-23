@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+{% load i18n nepali_tags %}
+
+{% block title %}{% trans "Fuel Price Management" %} | {{ station_name }}{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900">{% trans "Fuel Price Revisions & History" %}</h1>
+            <p class="text-sm text-slate-500">
+                {% trans "Auditable fuel pricing history. Historical prices remain immutable for previous fuel sales transactions." %}
+            </p>
+        </div>
+        <div>
+            <a href="{% url 'station:price_create' %}" class="btn btn-primary">
+                <span>➕</span>
+                <span>{% trans "Record Price Revision" %}</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Active Consumer Prices Today Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {% for item in current_rates %}
+            <div class="stat-card border-l-4" style="border-left-color: {{ item.fuel.color_code }};">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <span class="badge {{ item.fuel.badge_class }} text-xs">
+                            {{ item.fuel.code }}
+                        </span>
+                        <h2 class="text-lg font-bold text-slate-900 mt-1">{{ item.fuel.name_en }}</h2>
+                        <p class="text-xs text-slate-500 font-devanagari">{{ item.fuel.name_ne }}</p>
+                    </div>
+                    <div class="text-right">
+                        {% if item.price %}
+                            <p class="text-xs text-slate-500 uppercase tracking-wider font-semibold">{% trans "Retail Rate" %}</p>
+                            <p class="text-2xl font-black text-emerald-800">
+                                {{ item.price.selling_price|currency_npr }} <span class="text-xs font-normal text-slate-500">/ {{ item.fuel.unit }}</span>
+                            </p>
+                        {% else %}
+                            <span class="badge bg-amber-100 text-amber-800 text-xs">{% trans "Pending Price" %}</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% if item.price %}
+                    <div class="mt-4 pt-3 border-t border-slate-100 flex justify-between text-xs text-slate-600">
+                        <div>
+                            <span>{% trans "Dealer Cost:" %}</span>
+                            <span class="font-mono font-semibold">{{ item.price.purchase_price|currency_npr }}</span>
+                        </div>
+                        <div>
+                            <span>{% trans "Dealer Margin:" %}</span>
+                            <span class="font-mono font-bold text-emerald-700">+{{ item.price.margin_per_liter|currency_npr }}</span>
+                        </div>
+                    </div>
+                    <div class="mt-2 text-[11px] text-slate-400">
+                        {% trans "Effective since:" %} {{ item.price.effective_date|to_bs:"friendly" }} ({{ item.price.effective_date|date:"Y-m-d H:i" }})
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Historical Price Audit Table -->
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider">
+                {% trans "Price Change History & Circular Log" %}
+            </h3>
+            <form method="GET" class="flex items-center gap-2">
+                <select name="fuel" class="form-select text-xs py-1.5">
+                    <option value="">{% trans "All Fuel Types" %}</option>
+                    {% for f in fuels_filter %}
+                        <option value="{{ f.code }}" {% if selected_fuel == f.code %}selected{% endif %}>{{ f.name_en }}</option>
+                    {% endfor %}
+                </select>
+                <select name="status" class="form-select text-xs py-1.5">
+                    <option value="">{% trans "All Statuses" %}</option>
+                    <option value="APPROVED" {% if selected_status == 'APPROVED' %}selected{% endif %}>{% trans "Approved" %}</option>
+                    <option value="PENDING" {% if selected_status == 'PENDING' %}selected{% endif %}>{% trans "Pending" %}</option>
+                </select>
+                <button type="submit" class="btn btn-secondary text-xs py-1.5 px-3">
+                    {% trans "Filter" %}
+                </button>
+            </form>
+        </div>
+
+        <div class="table-container border-0 rounded-none shadow-none">
+            <table class="table-base">
+                <thead class="table-header">
+                    <tr>
+                        <th scope="col">{% trans "Fuel" %}</th>
+                        <th scope="col">{% trans "Selling Price" %}</th>
+                        <th scope="col">{% trans "Purchase Price" %}</th>
+                        <th scope="col">{% trans "Dealer Margin" %}</th>
+                        <th scope="col">{% trans "Effective Date (BS & AD)" %}</th>
+                        <th scope="col">{% trans "Reference Circular" %}</th>
+                        <th scope="col">{% trans "Status" %}</th>
+                        <th scope="col">{% trans "Recorded By" %}</th>
+                        <th scope="col" class="text-right">{% trans "Actions" %}</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    {% for p in prices %}
+                        <tr class="table-row">
+                            <td class="table-cell">
+                                <span class="badge {{ p.fuel_type.badge_class }}">
+                                    {{ p.fuel_type.code }}
+                                </span>
+                            </td>
+                            <td class="table-cell font-mono font-bold text-emerald-800">
+                                {{ p.selling_price|currency_npr }}
+                            </td>
+                            <td class="table-cell font-mono text-slate-700">
+                                {{ p.purchase_price|currency_npr }}
+                            </td>
+                            <td class="table-cell font-mono font-semibold text-emerald-700">
+                                +{{ p.margin_per_liter|currency_npr }}
+                            </td>
+                            <td class="table-cell text-xs">
+                                <span class="font-medium text-slate-900 block">{{ p.effective_date|to_bs:"friendly" }}</span>
+                                <span class="text-slate-400 font-mono">{{ p.effective_date|date:"Y-m-d H:i" }} AD</span>
+                            </td>
+                            <td class="table-cell text-xs text-slate-600">
+                                {{ p.notes|default:"-" }}
+                            </td>
+                            <td class="table-cell">
+                                {% if p.approval_status == 'APPROVED' %}
+                                    <span class="badge badge-success text-[11px]">
+                                        ✓ {% trans "Approved" %}
+                                    </span>
+                                {% elif p.approval_status == 'PENDING' %}
+                                    <span class="badge bg-amber-100 text-amber-800 border-amber-300 text-[11px]">
+                                        ⏳ {% trans "Pending" %}
+                                    </span>
+                                {% else %}
+                                    <span class="badge badge-danger text-[11px]">
+                                        ✕ {% trans "Rejected" %}
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td class="table-cell text-xs text-slate-600">
+                                {{ p.created_by.username }}
+                            </td>
+                            <td class="table-cell text-right">
+                                {% if p.approval_status == 'PENDING' and user.is_owner or user.is_manager %}
+                                    <a href="{% url 'station:price_approve' p.pk %}" class="btn btn-primary btn-sm">
+                                        ✓ {% trans "Approve" %}
+                                    </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="9" class="py-8 text-center text-slate-500 text-sm">
+                                {% trans "No price revision records found." %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

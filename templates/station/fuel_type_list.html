@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% load i18n nepali_tags %}
+
+{% block title %}{% trans "Fuel Products" %} | {{ station_name }}{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900">{% trans "Fuel Products Configuration" %}</h1>
+            <p class="text-sm text-slate-500">
+                {% trans "Configure Petrol (MS) and Diesel (HSD) fuel types, units, and color indicators." %}
+            </p>
+        </div>
+        <div>
+            <a href="{% url 'station:fuel_create' %}" class="btn btn-primary">
+                <span>➕</span>
+                <span>{% trans "Add Fuel Product" %}</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Fuel Products Table -->
+    <div class="table-container">
+        <table class="table-base">
+            <thead class="table-header">
+                <tr>
+                    <th scope="col">{% trans "Fuel Product" %}</th>
+                    <th scope="col">{% trans "Code" %}</th>
+                    <th scope="col">{% trans "Unit" %}</th>
+                    <th scope="col">{% trans "Tanks Connected" %}</th>
+                    <th scope="col">{% trans "Nozzles Dispensing" %}</th>
+                    <th scope="col">{% trans "Current Selling Rate" %}</th>
+                    <th scope="col">{% trans "Status" %}</th>
+                    <th scope="col" class="text-right">{% trans "Actions" %}</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                {% for fuel in fuels %}
+                    {% with current_price=fuel.get_current_price %}
+                        <tr class="table-row">
+                            <td class="table-cell">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-4 h-4 rounded-full border border-slate-300 flex-shrink-0" style="background-color: {{ fuel.color_code }};"></span>
+                                    <div>
+                                        <span class="font-bold text-slate-900 block">{{ fuel.name_en }}</span>
+                                        <span class="text-xs text-slate-500 font-devanagari">{{ fuel.name_ne }}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="table-cell font-mono font-bold text-slate-700">
+                                {{ fuel.code }}
+                            </td>
+                            <td class="table-cell text-slate-600">
+                                {{ fuel.unit }}
+                            </td>
+                            <td class="table-cell text-slate-700">
+                                <span class="badge bg-slate-100 text-slate-800 border-slate-200">
+                                    {{ fuel.tanks_count }} {% trans "Tanks" %}
+                                </span>
+                            </td>
+                            <td class="table-cell text-slate-700">
+                                <span class="badge bg-emerald-50 text-emerald-800 border-emerald-200">
+                                    {{ fuel.nozzles_count }} {% trans "Nozzles" %}
+                                </span>
+                            </td>
+                            <td class="table-cell">
+                                {% if current_price %}
+                                    <div class="font-bold text-emerald-800">
+                                        {{ current_price.selling_price|currency_npr }} / {{ fuel.unit }}
+                                    </div>
+                                    <span class="text-[10px] text-slate-500">
+                                        {% trans "Cost:" %} {{ current_price.purchase_price|currency_npr }}
+                                    </span>
+                                {% else %}
+                                    <span class="text-xs text-amber-600 font-medium">{% trans "No active price set" %}</span>
+                                {% endif %}
+                            </td>
+                            <td class="table-cell">
+                                {% if fuel.is_active %}
+                                    <span class="badge badge-success text-[11px]">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span>
+                                        {% trans "Active" %}
+                                    </span>
+                                {% else %}
+                                    <span class="badge badge-danger text-[11px]">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-red-500 mr-1.5"></span>
+                                        {% trans "Inactive" %}
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td class="table-cell text-right space-x-1.5">
+                                <a href="{% url 'station:fuel_edit' fuel.pk %}" class="btn btn-secondary btn-sm">
+                                    ✏️ {% trans "Edit" %}
+                                </a>
+                                <a href="{% url 'station:fuel_toggle' fuel.pk %}" class="btn btn-secondary btn-sm {% if fuel.is_active %}text-amber-700{% else %}text-emerald-700{% endif %}">
+                                    {% if fuel.is_active %}{% trans "Deactivate" %}{% else %}{% trans "Activate" %}{% endif %}
+                                </a>
+                            </td>
+                        </tr>
+                    {% endwith %}
+                {% empty %}
+                    <tr>
+                        <td colspan="8" class="py-8 text-center text-slate-500 text-sm">
+                            {% trans "No fuel products configured yet." %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

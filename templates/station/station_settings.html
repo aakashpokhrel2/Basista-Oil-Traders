@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+{% load i18n nepali_tags %}
+
+{% block title %}{{ title }} | {{ station_name }}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900">{{ title }}</h1>
+            <p class="text-sm text-slate-500">
+                {% trans "Manage official dealership identity, IRD tax details, currency, and fiscal year." %}
+            </p>
+        </div>
+        <div class="flex items-center gap-2">
+            <span class="badge badge-success text-xs">
+                {% trans "Fiscal Year:" %} {{ config.financial_year }}
+            </span>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <!-- Station Profile Header Strip -->
+        <div class="bg-gradient-to-r from-emerald-800 to-teal-800 p-6 text-white flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-3xl">
+                    {% if config.logo %}
+                        <img src="{{ config.logo.url }}" alt="Logo" class="w-12 h-12 object-contain rounded-lg">
+                    {% else %}
+                        ⛽
+                    {% endif %}
+                </div>
+                <div>
+                    <h2 class="text-lg font-bold">{{ config.station_name_en }}</h2>
+                    <p class="text-xs text-emerald-200 font-devanagari">{{ config.station_name_ne }}</p>
+                    <p class="text-[11px] text-emerald-300 mt-1">
+                        {{ config.station_address_en }} &bull; PAN/VAT: <span class="font-mono font-bold">{{ config.pan_vat_number }}</span>
+                    </p>
+                </div>
+            </div>
+            <div class="hidden sm:block text-right text-xs text-emerald-200">
+                <p>{% trans "Operating Timezone:" %} <span class="font-mono text-white">{{ config.timezone }}</span></p>
+                <p class="mt-0.5">{% trans "Default Currency:" %} <span class="font-mono font-bold text-white">{{ config.currency }}</span></p>
+            </div>
+        </div>
+
+        <!-- Form Body -->
+        <div class="p-6">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="mb-5 p-3.5 rounded-lg bg-red-50 border border-red-200 text-red-800 text-xs">
+                        {% for error in form.non_field_errors %}
+                            <p>⚠️ {{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <!-- Section: Station Identity -->
+                <div class="mb-6">
+                    <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider mb-3 flex items-center gap-2 border-b border-slate-100 pb-2">
+                        <span>🏢</span>
+                        <span>{% trans "Station Identity (Bilingual)" %}</span>
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="form-group">
+                            <label class="form-label">{{ form.station_name_en.label }}</label>
+                            {{ form.station_name_en }}
+                            {% if form.station_name_en.errors %}<p class="form-error">{{ form.station_name_en.errors.0 }}</p>{% endif %}
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label font-devanagari">{{ form.station_name_ne.label }}</label>
+                            {{ form.station_name_ne }}
+                            {% if form.station_name_ne.errors %}<p class="form-error">{{ form.station_name_ne.errors.0 }}</p>{% endif %}
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">{{ form.station_address_en.label }}</label>
+                            {{ form.station_address_en }}
+                            {% if form.station_address_en.errors %}<p class="form-error">{{ form.station_address_en.errors.0 }}</p>{% endif %}
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label font-devanagari">{{ form.station_address_ne.label }}</label>
+                            {{ form.station_address_ne }}
+                            {% if form.station_address_ne.errors %}<p class="form-error">{{ form.station_address_ne.errors.0 }}</p>{% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section: Contact & Official Tax -->
+                <div class="mb-6">
+                    <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider mb-3 flex items-center gap-2 border-b border-slate-100 pb-2">
+                        <span>📜</span>
+                        <span>{% trans "Contact & Government Tax Identification" %}</span>
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="form-group">
+                            <label class="form-label">{{ form.pan_vat_number.label }}</label>
+                            {{ form.pan_vat_number }}
+                            {% if form.pan_vat_number.errors %}<p class="form-error">{{ form.pan_vat_number.errors.0 }}</p>{% endif %}
+                            <p class="form-help text-[11px]">{{ form.pan_vat_number.help_text }}</p>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">{{ form.phone_number.label }}</label>
+                            {{ form.phone_number }}
+                            {% if form.phone_number.errors %}<p class="form-error">{{ form.phone_number.errors.0 }}</p>{% endif %}
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">{{ form.email.label }}</label>
+                            {{ form.email }}
+                            {% if form.email.errors %}<p class="form-error">{{ form.email.errors.0 }}</p>{% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section: System & Localization -->
+                <div class="mb-6">
+                    <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider mb-3 flex items-center gap-2 border-b border-slate-100 pb-2">
+                        <span>⚙️</span>
+                        <span>{% trans "Financial Year & System Settings" %}</span>
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                        <div class="form-group">
+                            <label class="form-label">{{ form.financial_year.label }}</label>
+                            {{ form.financial_year }}
+                            {% if form.financial_year.errors %}<p class="form-error">{{ form.financial_year.errors.0 }}</p>{% endif %}
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">{{ form.currency.label }}</label>
+                            {{ form.currency }}
+                            {% if form.currency.errors %}<p class="form-error">{{ form.currency.errors.0 }}</p>{% endif %}
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">{{ form.default_language.label }}</label>
+                            {{ form.default_language }}
+                            {% if form.default_language.errors %}<p class="form-error">{{ form.default_language.errors.0 }}</p>{% endif %}
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">{{ form.timezone.label }}</label>
+                            {{ form.timezone }}
+                            {% if form.timezone.errors %}<p class="form-error">{{ form.timezone.errors.0 }}</p>{% endif %}
+                        </div>
+                        <div class="form-group sm:col-span-4">
+                            <label class="form-label">{{ form.logo.label }}</label>
+                            {{ form.logo }}
+                            {% if form.logo.errors %}<p class="form-error">{{ form.logo.errors.0 }}</p>{% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-slate-100 flex justify-end gap-3">
+                    <button type="submit" class="btn btn-primary text-sm font-semibold shadow-sm">
+                        💾 {% trans "Save Station Profile" %}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

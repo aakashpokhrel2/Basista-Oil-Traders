@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load i18n nepali_tags %}
+
+{% block title %}{% trans "Pumps & Nozzles" %} | {{ station_name }}{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900">{% trans "Dispensing Pumps & Nozzles" %}</h1>
+            <p class="text-sm text-slate-500">
+                {% trans "Manage petrol and diesel dispensing pumps, attached nozzles, and electronic totalizer meters." %}
+            </p>
+        </div>
+        <div class="flex items-center gap-2">
+            <a href="{% url 'station:pump_create' %}" class="btn btn-secondary text-xs">
+                <span>➕</span>
+                <span>{% trans "Add Pump" %}</span>
+            </a>
+            <a href="{% url 'station:nozzle_create' %}" class="btn btn-primary text-xs">
+                <span>➕</span>
+                <span>{% trans "Add Nozzle" %}</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Pumps Cards with Nozzles -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {% for pump in pumps %}
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <!-- Pump Header -->
+                <div class="p-5 border-b border-slate-100 bg-slate-50/70 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-700 text-white flex items-center justify-center font-bold text-lg shadow-sm">
+                            {{ pump.pump_number }}
+                        </div>
+                        <div>
+                            <h2 class="text-base font-bold text-slate-900">{{ pump.pump_name }}</h2>
+                            <p class="text-xs text-slate-500">
+                                {% if pump.model_name %}{{ pump.model_name }}{% else %}{% trans "Electronic Dispenser" %}{% endif %}
+                                {% if pump.serial_number %}&bull; S/N: <span class="font-mono">{{ pump.serial_number }}</span>{% endif %}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        {% if pump.status == 'ACTIVE' %}
+                            <span class="badge badge-success text-xs">✓ {% trans "Operating" %}</span>
+                        {% elif pump.status == 'MAINTENANCE' %}
+                            <span class="badge bg-amber-100 text-amber-800 border-amber-200 text-xs">⚠️ {% trans "Maintenance" %}</span>
+                        {% else %}
+                            <span class="badge badge-danger text-xs">✕ {% trans "Inactive" %}</span>
+                        {% endif %}
+                        <a href="{% url 'station:pump_edit' pump.pk %}" class="btn btn-secondary btn-sm" title="{% trans 'Edit Pump' %}">
+                            ✏️
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Attached Nozzles List -->
+                <div class="p-5">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                            {% trans "Configured Nozzles" %} ({{ pump.nozzles.count }})
+                        </h3>
+                        <a href="{% url 'station:nozzle_create' %}?pump={{ pump.pk }}" class="text-xs text-emerald-700 hover:text-emerald-800 font-semibold">
+                            + {% trans "Add Nozzle to Pump" %} {{ pump.pump_number }}
+                        </a>
+                    </div>
+
+                    <div class="space-y-3">
+                        {% for nozzle in pump.nozzles.all %}
+                            <div class="p-3.5 rounded-lg border border-slate-200 hover:border-slate-300 transition flex items-center justify-between bg-white shadow-xs">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold text-white shadow-xs" style="background-color: {{ nozzle.fuel_type.color_code }};">
+                                        {{ nozzle.fuel_type.code }}
+                                    </div>
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <span class="font-mono font-bold text-sm text-slate-900">{{ nozzle.nozzle_code }}</span>
+                                            <span class="text-xs text-slate-500">({% trans "Pos." %} {{ nozzle.nozzle_number }})</span>
+                                            {% if nozzle.status == 'ACTIVE' %}
+                                                <span class="w-2 h-2 rounded-full bg-emerald-500" title="{% trans 'Active' %}"></span>
+                                            {% else %}
+                                                <span class="w-2 h-2 rounded-full bg-amber-500" title="{{ nozzle.get_status_display }}"></span>
+                                            {% endif %}
+                                        </div>
+                                        <p class="text-xs text-slate-500 mt-0.5">
+                                            {% trans "Tank:" %} <span class="font-medium text-slate-700">{{ nozzle.tank.tank_name }}</span>
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center gap-4 text-right">
+                                    <div>
+                                        <span class="text-[10px] text-slate-500 uppercase block">{% trans "Current Meter" %}</span>
+                                        <span class="font-mono font-bold text-sm text-slate-900">{{ nozzle.current_meter_reading }} L</span>
+                                    </div>
+                                    <a href="{% url 'station:nozzle_edit' nozzle.pk %}" class="p-1.5 text-slate-400 hover:text-slate-700 rounded-md transition" title="{% trans 'Edit Nozzle' %}">
+                                        ✏️
+                                    </a>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <p class="py-4 text-center text-xs text-slate-400">
+                                {% trans "No nozzles assigned to this pump yet." %}
+                            </p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-span-2 bg-white rounded-xl p-8 border border-slate-200 text-center text-slate-500">
+                {% trans "No fuel dispensing pumps configured yet." %}
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
