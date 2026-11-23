@@ -1,0 +1,200 @@
+{% extends 'base.html' %}
+{% load i18n nepali_tags %}
+
+{% block title %}{{ title }} | {{ station_name }}{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900">{{ title }}</h1>
+            <p class="text-sm text-slate-500">
+                {% trans "Official double-entry source of truth: Profit & Loss (COGS), Balance Sheet, and Trial Balance." %}
+            </p>
+        </div>
+        <div class="flex items-center gap-2">
+            {% if tab == 'pnl' %}
+                <a href="{% url 'reports:export_pnl_pdf' %}?start_date={{ start_date }}&end_date={{ end_date }}" class="btn btn-primary text-xs">
+                    <span>📑</span>
+                    <span>{% trans "Export P&L to PDF (WeasyPrint)" %}</span>
+                </a>
+            {% endif %}
+            <button onclick="window.print()" class="btn btn-secondary text-xs">
+                <span>🖨️</span>
+                <span>{% trans "Print" %}</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="border-b border-slate-200">
+        <nav class="flex gap-4">
+            <a href="?tab=pnl" class="py-2.5 px-3 border-b-2 font-bold text-xs transition-colors {% if tab == 'pnl' %}border-emerald-600 text-emerald-800{% else %}border-transparent text-slate-500 hover:text-slate-800{% endif %}">
+                📈 {% trans "Income Statement (P&L)" %}
+            </a>
+            <a href="?tab=balance_sheet" class="py-2.5 px-3 border-b-2 font-bold text-xs transition-colors {% if tab == 'balance_sheet' %}border-emerald-600 text-emerald-800{% else %}border-transparent text-slate-500 hover:text-slate-800{% endif %}">
+                ⚖️ {% trans "Balance Sheet" %}
+            </a>
+            <a href="?tab=trial_balance" class="py-2.5 px-3 border-b-2 font-bold text-xs transition-colors {% if tab == 'trial_balance' %}border-emerald-600 text-emerald-800{% else %}border-transparent text-slate-500 hover:text-slate-800{% endif %}">
+                📋 {% trans "Trial Balance" %}
+            </a>
+        </nav>
+    </div>
+
+    <!-- Tab 1: Income Statement (P&L with Cost of Goods Sold) -->
+    {% if tab == 'pnl' %}
+        <div class="max-w-3xl mx-auto bg-white border border-slate-200 rounded-2xl shadow-sm p-8 space-y-6">
+            <div class="border-b border-slate-200 pb-4 text-center">
+                <span class="text-xl">⛽</span>
+                <h2 class="text-lg font-bold text-slate-900">{{ station_name }}</h2>
+                <h3 class="text-sm font-semibold text-slate-600 mt-0.5">{% trans "Statement of Profit or Loss (Income Statement)" %}</h3>
+                <span class="text-xs text-slate-500 block mt-1">{% trans "Accounting Basis: Double-Entry Ledger with Fuel COGS" %}</span>
+            </div>
+
+            <!-- Revenue Section -->
+            <div class="space-y-2 text-xs">
+                <span class="font-bold uppercase tracking-wider text-emerald-800 text-sm block">1. {% trans "Operating Fuel Revenue" %}</span>
+                <div class="flex justify-between py-1.5 border-b border-slate-100 pl-3">
+                    <span class="text-slate-700">{% trans "Petrol (MS) Sales Revenue" %}</span>
+                    <span class="font-mono font-medium">{{ pnl.petrol_sales_rev|currency_npr }}</span>
+                </div>
+                <div class="flex justify-between py-1.5 border-b border-slate-100 pl-3">
+                    <span class="text-slate-700">{% trans "Diesel (HSD) Sales Revenue" %}</span>
+                    <span class="font-mono font-medium">{{ pnl.diesel_sales_rev|currency_npr }}</span>
+                </div>
+                <div class="flex justify-between py-2 border-b-2 border-slate-300 font-bold text-slate-900">
+                    <span>{% trans "Total Gross Revenue" %}</span>
+                    <span class="font-mono text-emerald-800 text-sm">{{ pnl.total_revenue|currency_npr }}</span>
+                </div>
+            </div>
+
+            <!-- COGS Section -->
+            <div class="space-y-2 text-xs">
+                <span class="font-bold uppercase tracking-wider text-slate-700 text-sm block">2. {% trans "Cost of Fuel Sold (COGS)" %}</span>
+                <div class="flex justify-between py-1.5 border-b border-slate-100 pl-3">
+                    <span class="text-slate-700">{% trans "Direct Tanker Fuel Purchase Inward" %}</span>
+                    <span class="font-mono text-slate-800">{{ pnl.total_cogs|currency_npr }}</span>
+                </div>
+                <div class="flex justify-between py-2 border-b-2 border-slate-300 font-bold text-slate-900">
+                    <span>{% trans "Gross Profit (Revenue - COGS)" %}</span>
+                    <span class="font-mono text-emerald-800 text-sm">{{ pnl.gross_profit|currency_npr }}</span>
+                </div>
+            </div>
+
+            <!-- Operating Expenses -->
+            <div class="space-y-2 text-xs">
+                <span class="font-bold uppercase tracking-wider text-purple-800 text-sm block">3. {% trans "Station Operating Expenses" %}</span>
+                {% for exp in pnl.expense_breakdown %}
+                    <div class="flex justify-between py-1.5 border-b border-slate-100 pl-3">
+                        <span class="text-slate-700">{{ exp.category__name_en }} ({{ exp.category__name_ne }})</span>
+                        <span class="font-mono">{{ exp.total|currency_npr }}</span>
+                    </div>
+                {% empty %}
+                    <div class="py-1.5 pl-3 text-slate-400">{% trans "No operating expenses in selected period." %}</div>
+                {% endfor %}
+                <div class="flex justify-between py-2 border-b-2 border-slate-300 font-bold text-slate-900">
+                    <span>{% trans "Total Operating Expenses" %}</span>
+                    <span class="font-mono text-purple-900 text-sm">{{ pnl.total_operating_expenses|currency_npr }}</span>
+                </div>
+            </div>
+
+            <!-- Net Profit -->
+            <div class="p-4 bg-emerald-50 rounded-xl border border-emerald-200 flex justify-between items-center text-sm font-black">
+                <span class="text-emerald-950 uppercase">{% trans "Net Operating Profit / (Loss)" %}:</span>
+                <span class="font-mono text-xl text-emerald-900">{{ pnl.net_profit|currency_npr }}</span>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Tab 2: Balance Sheet -->
+    {% if tab == 'balance_sheet' %}
+        <div class="max-w-3xl mx-auto bg-white border border-slate-200 rounded-2xl shadow-sm p-8 space-y-6">
+            <div class="border-b border-slate-200 pb-4 text-center">
+                <h2 class="text-lg font-bold text-slate-900">{{ station_name }}</h2>
+                <h3 class="text-sm font-semibold text-slate-600 mt-0.5">{% trans "Balance Sheet (Statement of Financial Position)" %}</h3>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-xs">
+                <!-- Assets -->
+                <div class="space-y-3">
+                    <span class="font-bold uppercase tracking-wider text-emerald-800 text-sm block border-b pb-1">1. {% trans "Assets" %}</span>
+                    <div class="flex justify-between py-1 border-b border-slate-100">
+                        <span>{% trans "Cash in Drawer" %}</span>
+                        <span class="font-mono font-medium">{{ bs.cash_balance|currency_npr }}</span>
+                    </div>
+                    <div class="flex justify-between py-1 border-b border-slate-100">
+                        <span>{% trans "Underground Fuel Inventory" %}</span>
+                        <span class="font-mono font-medium">{{ bs.inventory_val|currency_npr }}</span>
+                    </div>
+                    <div class="flex justify-between py-1 border-b border-slate-100">
+                        <span>{% trans "Accounts Receivable (Credit)" %}</span>
+                        <span class="font-mono font-medium">{{ bs.ar_balance|currency_npr }}</span>
+                    </div>
+                    <div class="flex justify-between py-2 border-t-2 border-slate-300 font-bold text-slate-900">
+                        <span>{% trans "Total Assets" %}</span>
+                        <span class="font-mono text-emerald-800">{{ bs.total_assets|currency_npr }}</span>
+                    </div>
+                </div>
+
+                <!-- Liabilities & Equity -->
+                <div class="space-y-3">
+                    <span class="font-bold uppercase tracking-wider text-red-800 text-sm block border-b pb-1">2. {% trans "Liabilities & Equity" %}</span>
+                    <div class="flex justify-between py-1 border-b border-slate-100">
+                        <span>{% trans "Supplier Payables (NOC)" %}</span>
+                        <span class="font-mono font-medium text-red-700">{{ bs.ap_balance|currency_npr }}</span>
+                    </div>
+                    <div class="flex justify-between py-1 border-b border-slate-100">
+                        <span>{% trans "Owner Capital & Retained Earnings" %}</span>
+                        <span class="font-mono font-medium text-blue-800">{{ bs.equity_balance|currency_npr }}</span>
+                    </div>
+                    <div class="flex justify-between py-2 border-t-2 border-slate-300 font-bold text-slate-900">
+                        <span>{% trans "Total Liabilities & Equity" %}</span>
+                        <span class="font-mono text-slate-900">{{ bs.total_assets|currency_npr }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Tab 3: Trial Balance -->
+    {% if tab == 'trial_balance' %}
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="px-5 py-4 border-b border-slate-200 bg-slate-50 flex justify-between items-center">
+                <h3 class="text-sm font-bold text-slate-900">{% trans "Double-Entry Trial Balance" %}</h3>
+                <span class="badge badge-success">✓ Total Debits == Total Credits</span>
+            </div>
+            <table class="table-base">
+                <thead class="table-header">
+                    <tr>
+                        <th class="w-24">{% trans "Code" %}</th>
+                        <th>{% trans "Account Name" %}</th>
+                        <th>{% trans "Classification" %}</th>
+                        <th class="text-right">{% trans "Debit Balance (NPR)" %}</th>
+                        <th class="text-right">{% trans "Credit Balance (NPR)" %}</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 text-xs">
+                    {% for row in tb_rows %}
+                        <tr class="hover:bg-slate-50">
+                            <td class="table-cell font-mono font-bold">{{ row.account.account_number }}</td>
+                            <td class="table-cell font-semibold">{{ row.account.name_en }} ({{ row.account.name_ne }})</td>
+                            <td class="table-cell">{{ row.account.get_account_type_display }}</td>
+                            <td class="table-cell text-right font-mono font-bold">{% if row.debit > 0 %}{{ row.debit|currency_npr }}{% else %}-{% endif %}</td>
+                            <td class="table-cell text-right font-mono font-bold">{% if row.credit > 0 %}{{ row.credit|currency_npr }}{% else %}-{% endif %}</td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="5" class="p-8 text-center text-slate-400">{% trans "No accounts with posted entries." %}</td></tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr class="bg-slate-50 border-t-2 border-slate-300 font-mono font-bold text-xs text-slate-900">
+                        <td colspan="3" class="p-3 text-right uppercase">{% trans "Balanced Total" %}:</td>
+                        <td class="p-3 text-right text-emerald-800">{{ tot_dr|currency_npr }}</td>
+                        <td class="p-3 text-right text-emerald-800">{{ tot_cr|currency_npr }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% load i18n nepali_tags %}
+
+{% block title %}{{ title }} | {{ station_name }}{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900">{{ title }}</h1>
+            <p class="text-sm text-slate-500">
+                {% trans "Multidimensional fuel dispense volume and revenue analysis with Excel export." %}
+            </p>
+        </div>
+        <div class="flex items-center gap-2">
+            <a href="{% url 'reports:export_sales_excel' %}?group_by={{ group_by }}" class="btn btn-secondary text-xs">
+                <span>📊</span>
+                <span>{% trans "Export to Excel (.xlsx)" %}</span>
+            </a>
+            <button onclick="window.print()" class="btn btn-secondary text-xs">
+                <span>🖨️</span>
+                <span>{% trans "Print" %}</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Filters & Group By Navigation Bar -->
+    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+        <form method="GET" class="flex flex-wrap items-center gap-3 text-xs">
+            <div>
+                <label class="block font-semibold text-slate-600 mb-1">{% trans "Group By Dimension" %}:</label>
+                <select name="group_by" class="form-select text-xs py-1.5" onchange="this.form.submit()">
+                    <option value="daily" {% if group_by == 'daily' %}selected{% endif %}>{% trans "Daily Sales Summary" %}</option>
+                    <option value="pump" {% if group_by == 'pump' %}selected{% endif %}>{% trans "Pump / Island Wise" %}</option>
+                    <option value="nozzle" {% if group_by == 'nozzle' %}selected{% endif %}>{% trans "Nozzle Wise" %}</option>
+                    <option value="employee" {% if group_by == 'employee' %}selected{% endif %}>{% trans "Employee / Operator Wise" %}</option>
+                    <option value="shift" {% if group_by == 'shift' %}selected{% endif %}>{% trans "Shift Wise" %}</option>
+                    <option value="payment" {% if group_by == 'payment' %}selected{% endif %}>{% trans "Payment Method (Cash/Credit/Bank)" %}</option>
+                    <option value="mechanism" {% if group_by == 'mechanism' %}selected{% endif %}>{% trans "Sale Mechanism (Meter vs Manual)" %}</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block font-semibold text-slate-600 mb-1">{% trans "Fuel Product" %}:</label>
+                <select name="fuel" class="form-select text-xs py-1.5" onchange="this.form.submit()">
+                    <option value="">{% trans "All Fuel Types" %}</option>
+                    {% for f in fuels %}
+                        <option value="{{ f.code }}" {% if selected_fuel == f.code %}selected{% endif %}>{{ f.name_en }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <label class="block font-semibold text-slate-600 mb-1">{% trans "Start Date" %}:</label>
+                <input type="date" name="start_date" value="{{ start_date }}" class="form-input text-xs py-1">
+            </div>
+
+            <div>
+                <label class="block font-semibold text-slate-600 mb-1">{% trans "End Date" %}:</label>
+                <input type="date" name="end_date" value="{{ end_date }}" class="form-input text-xs py-1">
+            </div>
+
+            <div class="self-end">
+                <button type="submit" class="btn btn-primary text-xs py-1.5 px-3">
+                    🔍 {% trans "Filter" %}
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Summary Strip -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="stat-card border-l-4 border-l-emerald-600">
+            <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">{% trans "Total Reconciled Revenue" %}</span>
+            <p class="text-2xl font-black text-emerald-800 mt-1 font-mono">{{ totals.grand_revenue|default:"0.00"|currency_npr }}</p>
+        </div>
+        <div class="stat-card border-l-4 border-l-blue-600">
+            <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">{% trans "Total Dispensed Volume" %}</span>
+            <p class="text-2xl font-black text-blue-900 mt-1 font-mono">{{ totals.grand_volume|default:"0" }} Litres</p>
+        </div>
+        <div class="stat-card border-l-4 border-l-amber-600">
+            <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">{% trans "Total Transactions" %}</span>
+            <p class="text-2xl font-black text-slate-900 mt-1 font-mono">{{ totals.grand_count|default:"0" }}</p>
+        </div>
+    </div>
+
+    <!-- Results Table -->
+    <div class="table-container">
+        <table class="table-base">
+            <thead class="table-header">
+                <tr>
+                    <th>{% trans "Dimension / Period" %}</th>
+                    <th class="text-right">{% trans "Invoices" %}</th>
+                    <th class="text-right">{% trans "Volume (Litres)" %}</th>
+                    <th class="text-right">{% trans "Total Revenue (NPR)" %}</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 text-xs">
+                {% for r in records %}
+                    <tr class="hover:bg-slate-50">
+                        <td class="table-cell font-bold text-slate-900">
+                            {% if group_by == 'pump' %}
+                                📟 {{ r.nozzle__pump__pump_name }} ({% trans "Pump" %} #{{ r.nozzle__pump__pump_number }})
+                            {% elif group_by == 'nozzle' %}
+                                📟 {{ r.nozzle__nozzle_code }} - {{ r.nozzle__pump__pump_name }} ({{ r.fuel_type__code }})
+                            {% elif group_by == 'employee' %}
+                                👤 {{ r.recorded_by__username }}
+                            {% elif group_by == 'shift' %}
+                                🕒 {{ r.shift__shift_number }} ({{ r.shift__schedule__name_en }} &bull; {{ r.shift__date_ad }})
+                            {% elif group_by == 'payment' %}
+                                💳 {{ r.payment_method }}
+                            {% elif group_by == 'mechanism' %}
+                                {% if r.sale_type == 'METER' %}📟 {% trans "Meter Dispense" %}{% else %}📝 {% trans "Manual Sales Entry" %}{% endif %}
+                            {% else %}
+                                📅 {{ r.transaction_date__date }}
+                            {% endif %}
+                        </td>
+                        <td class="table-cell text-right font-mono text-slate-700">{{ r.tx_count }}</td>
+                        <td class="table-cell text-right font-mono font-medium text-slate-900">{{ r.total_qty }} L</td>
+                        <td class="table-cell text-right font-mono font-bold text-emerald-800">{{ r.total_rev|currency_npr }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="4" class="p-8 text-center text-slate-400">{% trans "No sales records match this filter." %}</td></tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr class="bg-slate-50 border-t-2 border-slate-300 font-bold text-xs text-slate-900">
+                    <td class="p-3 uppercase">{% trans "Grand Total" %}:</td>
+                    <td class="p-3 text-right font-mono">{{ totals.grand_count|default:"0" }}</td>
+                    <td class="p-3 text-right font-mono">{{ totals.grand_volume|default:"0" }} L</td>
+                    <td class="p-3 text-right font-mono text-emerald-800">{{ totals.grand_revenue|default:"0.00"|currency_npr }}</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+{% endblock %}

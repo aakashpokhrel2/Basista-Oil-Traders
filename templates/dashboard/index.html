@@ -1,0 +1,340 @@
+{% extends 'base.html' %}
+{% load i18n nepali_tags %}
+
+{% block title %}{% trans "Executive Dashboard" %} | {{ station_name }}{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Welcome Banner with Dual Gregorian / Bikram Sambat Calendar -->
+    <div class="bg-gradient-to-r from-emerald-800 via-emerald-700 to-teal-800 rounded-2xl p-6 sm:p-8 text-white shadow-md relative overflow-hidden">
+        <div class="absolute -right-6 -bottom-8 opacity-10 text-9xl select-none pointer-events-none">
+            ⛽
+        </div>
+
+        <div class="relative z-10 max-w-4xl">
+            <div class="flex items-center gap-2 mb-2">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/30 text-emerald-100 border border-emerald-400/40">
+                    {{ user.get_role_display }}
+                </span>
+                <span class="text-xs text-emerald-200">
+                    &bull; {{ station_location }}
+                </span>
+                {% if active_shift %}
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-bold bg-emerald-400 text-emerald-950">
+                        ● {% trans "Active Shift" %}: {{ active_shift.shift_number }} ({{ active_shift.schedule.name }})
+                    </span>
+                {% endif %}
+            </div>
+
+            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">
+                {% blocktrans with name=user.get_full_name|default:user.username %}Welcome, {{ name }}!{% endblocktrans %}
+            </h1>
+            <p class="mt-1 text-sm text-emerald-100">
+                {% trans "Basista Oil Traders &bull; Executive Real-Time Operations & Accounting Dashboard" %}
+            </p>
+
+            <!-- Dual Calendar Pill -->
+            <div class="mt-4 pt-4 border-t border-emerald-600/60 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <div class="flex items-center gap-2 bg-emerald-900/40 rounded-lg p-2.5 border border-emerald-600/40">
+                    <span class="text-lg">🇳🇵</span>
+                    <div>
+                        <span class="text-emerald-300 font-semibold block text-[11px]">{% trans "Bikram Sambat (BS)" %}</span>
+                        <span class="font-medium text-white">{{ today_bs_full }}</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 bg-emerald-900/40 rounded-lg p-2.5 border border-emerald-600/40">
+                    <span class="text-lg">🌐</span>
+                    <div>
+                        <span class="text-emerald-300 font-semibold block text-[11px]">{% trans "Gregorian (AD)" %}</span>
+                        <span class="font-medium text-white">{{ today_ad_full }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 1: Today's Operational Fuel Sales Strip -->
+    <div>
+        <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3 flex items-center gap-1.5">
+            <span>⚡</span>
+            <span>{% trans "Today's Live Sales & Volume" %}</span>
+        </h2>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <!-- 1. Total Today Revenue -->
+            <div class="stat-card border-l-4 border-l-emerald-600">
+                <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">{% trans "Today's Revenue" %}</span>
+                <p class="text-2xl font-black text-emerald-800 mt-1 font-mono">{{ today_rev|currency_npr }}</p>
+                <span class="text-xs text-slate-500 mt-0.5 block font-mono">{{ today_litres }} Litres sold</span>
+            </div>
+
+            <!-- 2. Petrol MS Sales -->
+            <div class="stat-card border-l-4 border-l-teal-600">
+                <div class="flex justify-between items-start">
+                    <span class="text-[10px] uppercase font-bold text-teal-800 tracking-wider">{% trans "Petrol (MS) Sales" %}</span>
+                    <span class="text-xs font-bold text-slate-400">⛽</span>
+                </div>
+                <p class="text-xl font-bold text-slate-900 mt-1 font-mono">{{ today_ms.rev|default:"0.00"|currency_npr }}</p>
+                <span class="text-xs text-slate-500 block font-mono">{{ today_ms.qty|default:"0" }} L @ {{ petrol_price.selling_price|default:"175"|currency_npr }}</span>
+            </div>
+
+            <!-- 3. Diesel HSD Sales -->
+            <div class="stat-card border-l-4 border-l-blue-700">
+                <div class="flex justify-between items-start">
+                    <span class="text-[10px] uppercase font-bold text-blue-800 tracking-wider">{% trans "Diesel (HSD) Sales" %}</span>
+                    <span class="text-xs font-bold text-slate-400">🚜</span>
+                </div>
+                <p class="text-xl font-bold text-slate-900 mt-1 font-mono">{{ today_hsd.rev|default:"0.00"|currency_npr }}</p>
+                <span class="text-xs text-slate-500 block font-mono">{{ today_hsd.qty|default:"0" }} L @ {{ diesel_price.selling_price|default:"155"|currency_npr }}</span>
+            </div>
+
+            <!-- 4. Cash in Drawer -->
+            <div class="stat-card border-l-4 border-l-amber-600">
+                <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">{% trans "Physical Cash in Drawer" %}</span>
+                <p class="text-xl font-black text-amber-900 mt-1 font-mono">{{ cash_balance|currency_npr }}</p>
+                <a href="{% url 'accounting:cash_book' %}" class="text-[11px] text-amber-700 hover:underline block mt-0.5 font-medium">{% trans "View Cash Book" %} &rarr;</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 2: Financial Payables & Credit Strip -->
+    <div>
+        <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3 flex items-center gap-1.5">
+            <span>💼</span>
+            <span>{% trans "Financial Position & Working Capital" %}</span>
+        </h2>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <!-- Customer Credit -->
+            <div class="stat-card">
+                <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">{% trans "Customer Credit Debt" %}</span>
+                <p class="text-xl font-bold text-amber-800 mt-1 font-mono">{{ customer_credit|currency_npr }}</p>
+                <a href="{% url 'customers:customer_list' %}" class="text-[11px] text-amber-700 hover:underline block mt-0.5">{% trans "Credit Clients" %} &rarr;</a>
+            </div>
+
+            <!-- Supplier Payables -->
+            <div class="stat-card">
+                <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">{% trans "Supplier Payables (NOC)" %}</span>
+                <p class="text-xl font-bold text-red-800 mt-1 font-mono">{{ supplier_payable|currency_npr }}</p>
+                <a href="{% url 'purchases:supplier_list' %}" class="text-[11px] text-red-700 hover:underline block mt-0.5">{% trans "Depot Ledgers" %} &rarr;</a>
+            </div>
+
+            <!-- Total Purchases -->
+            <div class="stat-card">
+                <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">{% trans "Approved Purchases" %}</span>
+                <p class="text-xl font-bold text-blue-900 mt-1 font-mono">{{ total_purchases|currency_npr }}</p>
+                <a href="{% url 'purchases:purchase_list' %}" class="text-[11px] text-blue-700 hover:underline block mt-0.5">{% trans "Deliveries" %} &rarr;</a>
+            </div>
+
+            <!-- Total Expenses -->
+            <div class="stat-card">
+                <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">{% trans "Total Operating Expenses" %}</span>
+                <p class="text-xl font-bold text-purple-900 mt-1 font-mono">{{ total_expenses|currency_npr }}</p>
+                <a href="{% url 'expenses:expense_list' %}" class="text-[11px] text-purple-700 hover:underline block mt-0.5">{% trans "Expense Vouchers" %} &rarr;</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 3: Available Underground Fuel Stock Tanks -->
+    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                <span>🛢️</span>
+                <span>{% trans "Underground Fuel Storage Tanks (Live Stock)" %}</span>
+            </h2>
+            <a href="{% url 'station:tank_list' %}" class="text-xs text-emerald-700 font-semibold hover:underline">
+                {% trans "Manage Tanks" %} &rarr;
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {% for tank in all_tanks %}
+                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/50 flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-2">
+                        <div>
+                            <span class="font-bold text-slate-900 text-sm block">{{ tank.tank_name }} ({{ tank.tank_number }})</span>
+                            <span class="text-xs font-semibold {% if tank.fuel_type.code == 'MS' %}text-emerald-700{% else %}text-blue-700{% endif %}">
+                                {{ tank.fuel_type.name_en }} ({{ tank.fuel_type.code }})
+                            </span>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-base font-black font-mono text-slate-900">{{ tank.current_stock }} L</span>
+                            <span class="text-[11px] text-slate-500 block">/ {{ tank.capacity_liters }} L</span>
+                        </div>
+                    </div>
+
+                    <!-- Progress bar -->
+                    <div class="w-full bg-slate-200 rounded-full h-3 overflow-hidden mt-2">
+                        <div class="h-3 rounded-full transition-all duration-500 {% if tank.stock_percentage < 25 %}bg-red-500{% elif tank.fuel_type.code == 'MS' %}bg-emerald-600{% else %}bg-blue-600{% endif %}"
+                             style="width: {{ tank.stock_percentage }}%"></div>
+                    </div>
+
+                    <div class="flex justify-between items-center text-[11px] text-slate-500 mt-2">
+                        <span>{% trans "Fill Level" %}: <strong class="text-slate-800">{{ tank.stock_percentage }}%</strong></span>
+                        {% if tank.is_low_stock %}
+                            <span class="text-red-600 font-bold">⚠️ {% trans "Low Stock Alert" %}</span>
+                        {% else %}
+                            <span class="text-emerald-700 font-medium">✓ {% trans "Adequate Stock" %}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Row 4: Chart.js Interactive Analytics Panels -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Chart 1: Daily Sales Trend (Line) -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+            <h3 class="text-sm font-bold text-slate-900 mb-1 flex items-center gap-2">
+                <span>📈</span>
+                <span>{% trans "Daily Sales Trend (Liters)" %}</span>
+            </h3>
+            <p class="text-xs text-slate-500 mb-4">{% trans "7-day volume trends across Petrol (MS) and Diesel (HSD)." %}</p>
+            <div class="h-64">
+                <canvas id="salesTrendChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Chart 2: Petrol vs Diesel Ratio (Doughnut) -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+            <h3 class="text-sm font-bold text-slate-900 mb-1 flex items-center gap-2">
+                <span>⛽</span>
+                <span>{% trans "Fuel Product Sales Distribution" %}</span>
+            </h3>
+            <p class="text-xs text-slate-500 mb-4">{% trans "Volume proportion of Petrol (MS) vs Diesel (HSD)." %}</p>
+            <div class="h-64 flex items-center justify-center">
+                <canvas id="fuelRatioChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Chart 3: Storage Tank Stock vs Capacity (Bar) -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+            <h3 class="text-sm font-bold text-slate-900 mb-1 flex items-center gap-2">
+                <span>🛢️</span>
+                <span>{% trans "Tank Inventory vs Maximum Capacity" %}</span>
+            </h3>
+            <p class="text-xs text-slate-500 mb-4">{% trans "Current fuel levels against total tank capacity in litres." %}</p>
+            <div class="h-64">
+                <canvas id="tankCapacityChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Chart 4: Operating Expenses Breakdown (Doughnut) -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+            <h3 class="text-sm font-bold text-slate-900 mb-1 flex items-center gap-2">
+                <span>📉</span>
+                <span>{% trans "Operating Expenses by Category" %}</span>
+            </h3>
+            <p class="text-xs text-slate-500 mb-4">{% trans "Electricity, salaries, rent, maintenance, and administrative costs." %}</p>
+            <div class="h-64 flex items-center justify-center">
+                <canvas id="expenseChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js Initialization Script -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const data = {{ charts_data_json|safe }};
+
+        // 1. Daily Sales Trend Chart
+        const ctxSales = document.getElementById('salesTrendChart').getContext('2d');
+        new Chart(ctxSales, {
+            type: 'line',
+            data: {
+                labels: data.daily_labels,
+                datasets: [
+                    {
+                        label: '{% trans "Petrol (MS) Litres" %}',
+                        data: data.daily_sales_ms,
+                        borderColor: '#059669',
+                        backgroundColor: 'rgba(5, 150, 105, 0.1)',
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 4,
+                    },
+                    {
+                        label: '{% trans "Diesel (HSD) Litres" %}',
+                        data: data.daily_sales_hsd,
+                        borderColor: '#1d4ed8',
+                        backgroundColor: 'rgba(29, 78, 216, 0.1)',
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 4,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'top' } },
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+
+        // 2. Fuel Ratio Doughnut Chart
+        const ctxRatio = document.getElementById('fuelRatioChart').getContext('2d');
+        new Chart(ctxRatio, {
+            type: 'doughnut',
+            data: {
+                labels: ['{% trans "Petrol (MS)" %}', '{% trans "Diesel (HSD)" %}'],
+                datasets: [{
+                    data: data.petrol_vs_diesel,
+                    backgroundColor: ['#10b981', '#3b82f6'],
+                    borderWidth: 2,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'bottom' } }
+            }
+        });
+
+        // 3. Tank Inventory vs Capacity Bar Chart
+        const ctxTank = document.getElementById('tankCapacityChart').getContext('2d');
+        new Chart(ctxTank, {
+            type: 'bar',
+            data: {
+                labels: data.tank_labels,
+                datasets: [
+                    {
+                        label: '{% trans "Current Stock (L)" %}',
+                        data: data.tank_current,
+                        backgroundColor: '#059669',
+                    },
+                    {
+                        label: '{% trans "Maximum Capacity (L)" %}',
+                        data: data.tank_capacity,
+                        backgroundColor: '#e2e8f0',
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'top' } },
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+
+        // 4. Expenses by Category Chart
+        const ctxExp = document.getElementById('expenseChart').getContext('2d');
+        new Chart(ctxExp, {
+            type: 'doughnut',
+            data: {
+                labels: data.expense_labels.length ? data.expense_labels : ['{% trans "No Expenses" %}'],
+                datasets: [{
+                    data: data.expense_data.length ? data.expense_data : [1],
+                    backgroundColor: ['#8b5cf6', '#ec4899', '#f59e0b', '#3b82f6', '#10b981', '#64748b'],
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'bottom' } }
+            }
+        });
+    });
+</script>
+{% endblock %}

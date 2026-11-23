@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load i18n nepali_tags %}
+
+{% block title %}{% trans "Reports & Business Analytics" %} | {{ station_name }}{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div>
+        <h1 class="text-2xl font-bold text-slate-900">{% trans "Reports & Business Intelligence Portal" %}</h1>
+        <p class="text-sm text-slate-500">
+            {% trans "Comprehensive reporting across fuel operations, underground inventory, and double-entry financial statements." %}
+        </p>
+    </div>
+
+    <!-- 3 Core Reporting Pillars -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Pillar 1: Operational Reports -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-col justify-between hover:border-emerald-500 transition-all">
+            <div>
+                <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-2xl mb-4">
+                    📊
+                </div>
+                <h2 class="text-lg font-bold text-slate-900">{% trans "Operational Sales Reports" %}</h2>
+                <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                    {% trans "Cross-sectional analysis: Daily, Weekly, Monthly, Pump-wise, Nozzle-wise, Operator-wise, and Payment method breakdowns." %}
+                </p>
+                <div class="mt-4 pt-4 border-t border-slate-100 space-y-1.5 text-xs text-slate-600">
+                    <div class="flex items-center gap-1.5">✓ <span>{% trans "Daily / Monthly Trends" %}</span></div>
+                    <div class="flex items-center gap-1.5">✓ <span>{% trans "Nozzle & Pump Volumes" %}</span></div>
+                    <div class="flex items-center gap-1.5">✓ <span>{% trans "Meter vs Manual Breakdown" %}</span></div>
+                </div>
+            </div>
+            <div class="mt-6 pt-4 border-t border-slate-100 flex gap-2">
+                <a href="{% url 'reports:sales_report' %}" class="btn btn-primary text-xs w-full justify-center">
+                    {% trans "Open Sales Reports" %} &rarr;
+                </a>
+            </div>
+        </div>
+
+        <!-- Pillar 2: Inventory Reports -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-col justify-between hover:border-blue-500 transition-all">
+            <div>
+                <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-800 flex items-center justify-center text-2xl mb-4">
+                    🛢️
+                </div>
+                <h2 class="text-lg font-bold text-slate-900">{% trans "Inventory & Tank Reconciliation" %}</h2>
+                <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                    {% trans "Tank-wise auditable reconciliation: Opening Stock + Purchases - Dispensed + Returns +/- Dip Variations = Expected Stock." %}
+                </p>
+                <div class="mt-4 pt-4 border-t border-slate-100 space-y-1.5 text-xs text-slate-600">
+                    <div class="flex items-center gap-1.5">✓ <span>{% trans "Tank Stock Ledger" %}</span></div>
+                    <div class="flex items-center gap-1.5">✓ <span>{% trans "Dip Loss & Evaporation" %}</span></div>
+                    <div class="flex items-center gap-1.5">✓ <span>{% trans "Calibration Measure Returns" %}</span></div>
+                </div>
+            </div>
+            <div class="mt-6 pt-4 border-t border-slate-100 flex gap-2">
+                <a href="{% url 'reports:inventory_report' %}" class="btn btn-secondary text-xs w-full justify-center">
+                    {% trans "Open Inventory Reconciliation" %} &rarr;
+                </a>
+            </div>
+        </div>
+
+        <!-- Pillar 3: Financial Reports -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-col justify-between hover:border-amber-500 transition-all">
+            <div>
+                <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center text-2xl mb-4">
+                    📑
+                </div>
+                <h2 class="text-lg font-bold text-slate-900">{% trans "Financial Statements (Double-Entry)" %}</h2>
+                <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                    {% trans "True accounting source of truth: Profit & Loss (Income Statement with COGS), Balance Sheet, and Trial Balance." %}
+                </p>
+                <div class="mt-4 pt-4 border-t border-slate-100 space-y-1.5 text-xs text-slate-600">
+                    <div class="flex items-center gap-1.5">✓ <span>{% trans "Income Statement (P&L with COGS)" %}</span></div>
+                    <div class="flex items-center gap-1.5">✓ <span>{% trans "Balance Sheet (Assets = Liab + Eq)" %}</span></div>
+                    <div class="flex items-center gap-1.5">✓ <span>{% trans "Balanced Trial Balance (Dr == Cr)" %}</span></div>
+                </div>
+            </div>
+            <div class="mt-6 pt-4 border-t border-slate-100 flex gap-2">
+                <a href="{% url 'reports:financial_statements' %}" class="btn btn-secondary text-xs w-full justify-center">
+                    {% trans "Open Financial Statements" %} &rarr;
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

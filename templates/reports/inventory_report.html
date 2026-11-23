@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load i18n nepali_tags %}
+
+{% block title %}{{ title }} | {{ station_name }}{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900">{{ title }}</h1>
+            <p class="text-sm text-slate-500">
+                {% trans "Auditable underground tank stock reconciliation with physical dip comparisons and loss tracking." %}
+            </p>
+        </div>
+        <div class="flex items-center gap-2">
+            <button onclick="window.print()" class="btn btn-secondary text-xs">
+                <span>🖨️</span>
+                <span>{% trans "Print Report" %}</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-container">
+        <table class="table-base">
+            <thead class="table-header">
+                <tr>
+                    <th>{% trans "Tank & Fuel" %}</th>
+                    <th class="text-right">{% trans "Opening (L)" %}</th>
+                    <th class="text-right">{% trans "+ Purchases (L)" %}</th>
+                    <th class="text-right">{% trans "- Dispensed (L)" %}</th>
+                    <th class="text-right">{% trans "+ Returns (L)" %}</th>
+                    <th class="text-right">{% trans "+/- Adjustments (L)" %}</th>
+                    <th class="text-right">{% trans "Expected (L)" %}</th>
+                    <th class="text-right">{% trans "Actual Stock (L)" %}</th>
+                    <th class="text-right">{% trans "Variance (L)" %}</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 text-xs">
+                {% for row in report_rows %}
+                    <tr class="hover:bg-slate-50">
+                        <td class="table-cell">
+                            <span class="font-bold text-slate-900 block">{{ row.tank.tank_name }}</span>
+                            <span class="text-[11px] text-slate-500 font-mono">{{ row.tank.tank_number }} &bull; {{ row.fuel_type.code }}</span>
+                        </td>
+                        <td class="table-cell text-right font-mono">{{ row.opening_stock }} L</td>
+                        <td class="table-cell text-right font-mono text-emerald-700">+{{ row.purchases }} L</td>
+                        <td class="table-cell text-right font-mono text-red-700">-{{ row.dispensed }} L</td>
+                        <td class="table-cell text-right font-mono text-blue-700">+{{ row.test_returns }} L</td>
+                        <td class="table-cell text-right font-mono text-slate-600">{{ row.adjustments }} L</td>
+                        <td class="table-cell text-right font-mono font-bold text-slate-900">{{ row.expected_closing }} L</td>
+                        <td class="table-cell text-right font-mono font-bold text-emerald-800">{{ row.actual_closing }} L</td>
+                        <td class="table-cell text-right font-mono font-bold {% if row.variance == 0 %}text-emerald-700{% else %}text-amber-700{% endif %}">
+                            {{ row.variance }} L
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="9" class="p-8 text-center text-slate-400">{% trans "No storage tank data available." %}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
