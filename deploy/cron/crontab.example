@@ -1,0 +1,16 @@
+# ==============================================================================
+# Crontab Configuration for Basista Oil Traders
+# Install via: sudo crontab -u www-data -e
+# ==============================================================================
+
+# 1. Nightly automated database backup and offsite sync at 02:00 AM every day
+0 2 * * * /var/www/basista_oil/deploy/scripts/backup_cron.sh >/dev/null 2>&1
+
+# 2. Weekly backup restoration integrity test (Sunday at 03:00 AM)
+0 3 * * 0 /var/www/basista_oil/deploy/scripts/verify_backup.sh >> /var/log/petrol_station_verify.log 2>&1
+
+# 3. Clean expired Django sessions weekly (Sunday at 04:00 AM)
+0 4 * * 0 /var/www/basista_oil/venv/bin/python /var/www/basista_oil/manage.py clearsessions >/dev/null 2>&1
+
+# 4. Certbot SSL certificate automatic renewal (Handled automatically by certbot systemd timer, or twice monthly)
+0 5 1,15 * * /usr/bin/certbot renew --quiet --post-hook "systemctl reload nginx"

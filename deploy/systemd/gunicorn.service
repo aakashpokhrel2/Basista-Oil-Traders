@@ -1,0 +1,34 @@
+[Unit]
+Description=Gunicorn Application Server for Basista Oil Traders Petrol Station
+After=network.target postgresql.service
+Requires=gunicorn.socket
+
+[Service]
+Type=notify
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/basista_oil
+EnvironmentFile=/var/www/basista_oil/.env
+ExecStart=/var/www/basista_oil/venv/bin/gunicorn \
+    --config /var/www/basista_oil/deploy/gunicorn/gunicorn.conf.py \
+    config.wsgi:application
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=15
+PrivateTmp=true
+Restart=on-failure
+RestartSec=5s
+
+# Security sandboxing
+NoNewPrivileges=true
+ProtectSystem=full
+ProtectHome=true
+ReadWritePaths=/var/www/basista_oil/logs /var/www/basista_oil/media /var/log/gunicorn /run/gunicorn
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=basista_oil_gunicorn
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,12 @@
+[Unit]
+Description=Gunicorn Socket for Basista Oil Traders Petrol Station
+PartOf=gunicorn.service
+
+[Socket]
+ListenStream=/run/gunicorn/basista_oil.sock
+SocketUser=www-data
+SocketGroup=www-data
+SocketMode=0660
+
+[Install]
+WantedBy=sockets.target
