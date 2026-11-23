@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load i18n nepali_tags %}
+
+{% block title %}{% trans "General Journal" %} | {{ station_name }}{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900">{% trans "General Journal Ledger" %}</h1>
+            <p class="text-sm text-slate-500">
+                {% trans "Chronological record of double-entry financial transactions: Total Debits = Total Credits." %}
+            </p>
+        </div>
+        <div class="flex items-center gap-2">
+            <a href="{% url 'accounting:account_list' %}" class="btn btn-secondary text-xs">
+                <span>📚</span>
+                <span>{% trans "Chart of Accounts" %}</span>
+            </a>
+            <a href="{% url 'accounting:cash_book' %}" class="btn btn-primary text-xs">
+                <span>💵</span>
+                <span>{% trans "Cash Book" %}</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Journal Table -->
+    <div class="table-container">
+        <table class="table-base">
+            <thead class="table-header">
+                <tr>
+                    <th scope="col">{% trans "Voucher #" %}</th>
+                    <th scope="col">{% trans "Date (AD / BS)" %}</th>
+                    <th scope="col">{% trans "Source Reference" %}</th>
+                    <th scope="col">{% trans "Narration / Description" %}</th>
+                    <th scope="col" class="text-right">{% trans "Total Amount (NPR)" %}</th>
+                    <th scope="col">{% trans "Status" %}</th>
+                    <th scope="col" class="text-right">{% trans "Actions" %}</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                {% for j in entries %}
+                    <tr class="hover:bg-slate-50/80">
+                        <td class="table-cell font-mono font-bold text-xs">
+                            <a href="{% url 'accounting:journal_detail' pk=j.pk %}" class="text-emerald-700 hover:underline">
+                                {{ j.entry_number }}
+                            </a>
+                        </td>
+                        <td class="table-cell whitespace-nowrap">
+                            <span class="font-medium text-slate-900 block text-xs">{{ j.date|date:"Y-m-d" }}</span>
+                            <span class="text-[11px] text-emerald-700 font-medium block">{{ j.date_bs }}</span>
+                        </td>
+                        <td class="table-cell text-xs font-mono text-slate-700">
+                            {% if j.reference_type and j.reference_id %}
+                                {{ j.reference_type }} #{{ j.reference_id }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td class="table-cell text-xs text-slate-600 max-w-sm truncate" title="{{ j.description }}">{{ j.description }}</td>
+                        <td class="table-cell text-right font-mono font-bold text-xs text-slate-900">{{ j.total_amount|currency_npr }}</td>
+                        <td class="table-cell">
+                            {% if j.is_reversed %}
+                                <span class="badge badge-danger">{% trans "REVERSED" %}</span>
+                            {% else %}
+                                <span class="badge badge-success">{% trans "POSTED" %}</span>
+                            {% endif %}
+                        </td>
+                        <td class="table-cell text-right">
+                            <a href="{% url 'accounting:journal_detail' pk=j.pk %}" class="btn btn-secondary text-[11px] py-1 px-2.5">
+                                {% trans "View Voucher" %}
+                            </a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="7" class="p-8 text-center text-slate-400">{% trans "No journal entries found." %}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

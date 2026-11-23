@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load i18n nepali_tags %}
+
+{% block title %}{% trans "Purchase Invoice" %} {{ purchase.invoice_number }} | {{ station_name }}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-6">
+    <div class="flex items-center justify-between gap-4">
+        <a href="{% url 'purchases:purchase_list' %}" class="btn btn-secondary text-xs">
+            <span>←</span>
+            <span>{% trans "Back to Purchase Register" %}</span>
+        </a>
+        {% if purchase.approval_status == 'PENDING' and user.is_owner or purchase.approval_status == 'PENDING' and user.is_manager %}
+            <form method="POST" action="{% url 'purchases:purchase_approve' pk=purchase.pk %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary text-xs font-semibold px-4 py-2" onclick="return confirm('{% trans "Approve delivery? This will add fuel stock into the tank and post accounting ledger entries." %}');">
+                    <span>✅</span>
+                    <span>{% trans "Approve & Inward Fuel Stock" %}</span>
+                </button>
+            </form>
+        {% endif %}
+    </div>
+
+    <!-- Main Detail Card -->
+    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm p-8 space-y-6">
+        <div class="flex justify-between items-start border-b border-slate-200 pb-6">
+            <div>
+                <span class="badge {% if purchase.approval_status == 'APPROVED' %}badge-success{% else %}badge-warning{% endif %} uppercase">
+                    {{ purchase.get_approval_status_display }}
+                </span>
+                <h1 class="text-xl font-black text-slate-900 mt-2 font-mono">
+                    {% trans "Invoice #" %} {{ purchase.invoice_number }}
+                </h1>
+                <p class="text-xs text-slate-500 mt-0.5">
+                    {% trans "Supplier" %}: <strong>{{ purchase.supplier.name }}</strong>
+                </p>
+            </div>
+            <div class="text-right">
+                <span class="text-xs text-slate-500 block">{% trans "Purchase Date (AD)" %}: {{ purchase.purchase_date|date:"Y-m-d" }}</span>
+                <span class="text-xs text-emerald-700 font-semibold block">{% trans "Date (BS)" %}: {{ purchase.purchase_date_bs }}</span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
+            <div class="p-3 bg-slate-50 rounded-xl">
+                <span class="text-slate-500 block">{% trans "Fuel Product" %}</span>
+                <span class="font-bold text-slate-900 text-sm mt-0.5 block">{{ purchase.fuel_type.name_en }} ({{ purchase.fuel_type.code }})</span>
+            </div>
+            <div class="p-3 bg-slate-50 rounded-xl">
+                <span class="text-slate-500 block">{% trans "Receiving Tank" %}</span>
+                <span class="font-bold text-slate-900 text-sm mt-0.5 block">{{ purchase.receiving_tank.tank_name }}</span>
+            </div>
+            <div class="p-3 bg-slate-50 rounded-xl">
+                <span class="text-slate-500 block">{% trans "Delivered Volume" %}</span>
+                <span class="font-mono font-bold text-slate-900 text-sm mt-0.5 block">{{ purchase.delivered_quantity }} Litres</span>
+            </div>
+            <div class="p-3 bg-slate-50 rounded-xl">
+                <span class="text-slate-500 block">{% trans "Total Amount" %}</span>
+                <span class="font-mono font-bold text-emerald-800 text-sm mt-0.5 block">{{ purchase.total_amount|currency_npr }}</span>
+            </div>
+        </div>
+
+        <!-- Tanker Details -->
+        <div class="border-t border-slate-200 pt-4 grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+            <div>
+                <span class="text-slate-500">{% trans "Tanker Truck #" %}:</span>
+                <span class="font-semibold text-slate-900 ml-1">{{ purchase.tanker_number|default:"-" }}</span>
+            </div>
+            <div>
+                <span class="text-slate-500">{% trans "Driver Name" %}:</span>
+                <span class="font-semibold text-slate-900 ml-1">{{ purchase.driver_name|default:"-" }}</span>
+            </div>
+            <div>
+                <span class="text-slate-500">{% trans "Payment Status" %}:</span>
+                <span class="badge {% if purchase.payment_status == 'PAID' %}badge-success{% else %}badge-warning{% endif %} ml-1">
+                    {{ purchase.get_payment_status_display }}
+                </span>
+            </div>
+        </div>
+
+        {% if purchase.approval_status == 'APPROVED' %}
+            <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-900">
+                ✅ {% trans "Approved on" %} <strong>{{ purchase.approved_at|date:"Y-m-d H:i" }}</strong> {% trans "by" %} <strong>{{ purchase.approved_by.username }}</strong>. {% trans "StockMovement ledger and double-entry journals posted." %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

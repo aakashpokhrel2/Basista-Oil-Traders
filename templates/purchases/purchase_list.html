@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load i18n nepali_tags %}
+
+{% block title %}{% trans "Fuel Purchase Register" %} | {{ station_name }}{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900">{% trans "Fuel Purchases & Tanker Deliveries" %}</h1>
+            <p class="text-sm text-slate-500">
+                {% trans "Track inward tanker receipts from Nepal Oil Corporation (NOC), tank decanting, and invoice approvals." %}
+            </p>
+        </div>
+        <div class="flex items-center gap-2">
+            <a href="{% url 'purchases:purchase_create' %}" class="btn btn-primary text-xs">
+                <span>➕</span>
+                <span>{% trans "Register Tanker Delivery" %}</span>
+            </a>
+            <a href="{% url 'purchases:supplier_list' %}" class="btn btn-secondary text-xs">
+                <span>🏢</span>
+                <span>{% trans "Suppliers" %}</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Summary Strip -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="stat-card border-l-4 border-l-blue-600">
+            <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">{% trans "Total Approved Purchases" %}</span>
+            <p class="text-2xl font-black text-blue-900 mt-1 font-mono">{{ totals.tot_amount|default:"0.00"|currency_npr }}</p>
+            <span class="text-xs text-slate-500 mt-1 block">{{ totals.tot_volume|default:"0" }} L received into storage tanks</span>
+        </div>
+        <div class="stat-card border-l-4 border-l-emerald-600">
+            <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">{% trans "Amount Paid to Suppliers" %}</span>
+            <p class="text-2xl font-black text-emerald-800 mt-1 font-mono">{{ totals.tot_paid|default:"0.00"|currency_npr }}</p>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-container">
+        <table class="table-base">
+            <thead class="table-header">
+                <tr>
+                    <th scope="col">{% trans "Invoice #" %}</th>
+                    <th scope="col">{% trans "Date (AD / BS)" %}</th>
+                    <th scope="col">{% trans "Supplier" %}</th>
+                    <th scope="col">{% trans "Product" %}</th>
+                    <th scope="col">{% trans "Tank" %}</th>
+                    <th scope="col" class="text-right">{% trans "Delivered (L)" %}</th>
+                    <th scope="col" class="text-right">{% trans "Rate (NPR/L)" %}</th>
+                    <th scope="col" class="text-right">{% trans "Total (NPR)" %}</th>
+                    <th scope="col">{% trans "Approval" %}</th>
+                    <th scope="col" class="text-right">{% trans "Actions" %}</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                {% for p in purchases %}
+                    <tr class="hover:bg-slate-50/80">
+                        <td class="table-cell font-mono font-bold">
+                            <a href="{% url 'purchases:purchase_detail' pk=p.pk %}" class="text-emerald-700 hover:underline">
+                                {{ p.invoice_number }}
+                            </a>
+                            {% if p.tanker_number %}<span class="text-[11px] text-slate-500 block">{{ p.tanker_number }}</span>{% endif %}
+                        </td>
+                        <td class="table-cell whitespace-nowrap">
+                            <span class="font-medium text-slate-900 block text-xs">{{ p.purchase_date|date:"Y-m-d" }}</span>
+                            <span class="text-[11px] text-emerald-700 font-medium block">{{ p.purchase_date_bs }}</span>
+                        </td>
+                        <td class="table-cell text-xs font-semibold text-slate-800">{{ p.supplier.name }}</td>
+                        <td class="table-cell font-bold text-xs">{{ p.fuel_type.code }}</td>
+                        <td class="table-cell text-xs text-slate-600">{{ p.receiving_tank.tank_name }}</td>
+                        <td class="table-cell text-right font-mono font-bold text-xs">{{ p.delivered_quantity }} L</td>
+                        <td class="table-cell text-right font-mono text-xs text-slate-600">{{ p.purchase_price|currency_npr }}</td>
+                        <td class="table-cell text-right font-mono font-bold text-xs text-slate-900">{{ p.total_amount|currency_npr }}</td>
+                        <td class="table-cell">
+                            {% if p.approval_status == 'APPROVED' %}
+                                <span class="badge badge-success">{% trans "APPROVED" %}</span>
+                            {% elif p.approval_status == 'PENDING' %}
+                                <span class="badge badge-warning">{% trans "PENDING" %}</span>
+                            {% else %}
+                                <span class="badge badge-danger">{{ p.approval_status }}</span>
+                            {% endif %}
+                        </td>
+                        <td class="table-cell text-right">
+                            <a href="{% url 'purchases:purchase_detail' pk=p.pk %}" class="btn btn-secondary text-[11px] py-1 px-2.5">
+                                {% trans "View" %}
+                            </a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="10" class="p-8 text-center text-slate-400">{% trans "No fuel purchases recorded." %}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

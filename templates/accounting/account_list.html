@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% load i18n nepali_tags %}
+
+{% block title %}{% trans "Chart of Accounts" %} | {{ station_name }}{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900">{% trans "Chart of Accounts (COA)" %}</h1>
+            <p class="text-sm text-slate-500">
+                {% trans "Standard double-entry accounting structure: Assets, Liabilities, Equity, Revenue, and Expenses." %}
+            </p>
+        </div>
+        <div class="flex items-center gap-2">
+            <a href="{% url 'accounting:journal_list' %}" class="btn btn-secondary text-xs">
+                <span>📖</span>
+                <span>{% trans "General Journal" %}</span>
+            </a>
+            <a href="{% url 'accounting:cash_book' %}" class="btn btn-primary text-xs">
+                <span>💵</span>
+                <span>{% trans "Cash Book" %}</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- COA Sections -->
+    <div class="space-y-6">
+        <!-- 1. Assets -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="px-5 py-3.5 bg-emerald-50/70 border-b border-emerald-100 flex items-center justify-between">
+                <h2 class="text-sm font-bold text-emerald-950 flex items-center gap-2">
+                    <span>🏦</span>
+                    <span>1. {% trans "Assets (सम्पत्ति)" %} - 1000s</span>
+                </h2>
+                <span class="text-xs text-emerald-800 font-medium">{% trans "Cash, Bank, Fuel Stock, Accounts Receivable" %}</span>
+            </div>
+            <table class="table-base">
+                <thead class="table-header">
+                    <tr>
+                        <th class="w-24">{% trans "Code" %}</th>
+                        <th>{% trans "Account Name (English)" %}</th>
+                        <th>{% trans "Account Name (Nepali)" %}</th>
+                        <th class="text-right">{% trans "Current Balance (NPR)" %}</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 text-xs">
+                    {% for a in grouped_accounts.ASSET %}
+                        <tr class="hover:bg-slate-50">
+                            <td class="table-cell font-mono font-bold text-slate-800">{{ a.account_number }}</td>
+                            <td class="table-cell font-semibold text-slate-900">{{ a.name_en }}</td>
+                            <td class="table-cell text-slate-600">{{ a.name_ne }}</td>
+                            <td class="table-cell text-right font-mono font-bold text-emerald-800">{{ a.current_balance|currency_npr }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 2. Liabilities & Equity -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Liabilities -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="px-5 py-3.5 bg-red-50/70 border-b border-red-100 flex items-center justify-between">
+                    <h2 class="text-sm font-bold text-red-950 flex items-center gap-2">
+                        <span>📋</span>
+                        <span>2. {% trans "Liabilities (दायित्व)" %} - 2000s</span>
+                    </h2>
+                </div>
+                <table class="table-base">
+                    <thead class="table-header">
+                        <tr>
+                            <th class="w-24">{% trans "Code" %}</th>
+                            <th>{% trans "Account Name" %}</th>
+                            <th class="text-right">{% trans "Balance (NPR)" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 text-xs">
+                        {% for a in grouped_accounts.LIABILITY %}
+                            <tr class="hover:bg-slate-50">
+                                <td class="table-cell font-mono font-bold">{{ a.account_number }}</td>
+                                <td class="table-cell">
+                                    <span class="font-semibold text-slate-900 block">{{ a.name_en }}</span>
+                                    <span class="text-slate-500 text-[11px]">{{ a.name_ne }}</span>
+                                </td>
+                                <td class="table-cell text-right font-mono font-bold text-red-800">{{ a.current_balance|currency_npr }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Equity -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="px-5 py-3.5 bg-blue-50/70 border-b border-blue-100 flex items-center justify-between">
+                    <h2 class="text-sm font-bold text-blue-950 flex items-center gap-2">
+                        <span>🏛️</span>
+                        <span>3. {% trans "Equity (पुँजी)" %} - 3000s</span>
+                    </h2>
+                </div>
+                <table class="table-base">
+                    <thead class="table-header">
+                        <tr>
+                            <th class="w-24">{% trans "Code" %}</th>
+                            <th>{% trans "Account Name" %}</th>
+                            <th class="text-right">{% trans "Balance (NPR)" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 text-xs">
+                        {% for a in grouped_accounts.EQUITY %}
+                            <tr class="hover:bg-slate-50">
+                                <td class="table-cell font-mono font-bold">{{ a.account_number }}</td>
+                                <td class="table-cell">
+                                    <span class="font-semibold text-slate-900 block">{{ a.name_en }}</span>
+                                    <span class="text-slate-500 text-[11px]">{{ a.name_ne }}</span>
+                                </td>
+                                <td class="table-cell text-right font-mono font-bold text-blue-800">{{ a.current_balance|currency_npr }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 3. Revenue & Expenses -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Revenue -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="px-5 py-3.5 bg-emerald-50/70 border-b border-emerald-100 flex items-center justify-between">
+                    <h2 class="text-sm font-bold text-emerald-950 flex items-center gap-2">
+                        <span>📈</span>
+                        <span>4. {% trans "Revenue (आम्दानी)" %} - 4000s</span>
+                    </h2>
+                </div>
+                <table class="table-base">
+                    <thead class="table-header">
+                        <tr>
+                            <th class="w-24">{% trans "Code" %}</th>
+                            <th>{% trans "Account Name" %}</th>
+                            <th class="text-right">{% trans "Balance (NPR)" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 text-xs">
+                        {% for a in grouped_accounts.REVENUE %}
+                            <tr class="hover:bg-slate-50">
+                                <td class="table-cell font-mono font-bold">{{ a.account_number }}</td>
+                                <td class="table-cell">
+                                    <span class="font-semibold text-slate-900 block">{{ a.name_en }}</span>
+                                    <span class="text-slate-500 text-[11px]">{{ a.name_ne }}</span>
+                                </td>
+                                <td class="table-cell text-right font-mono font-bold text-emerald-800">{{ a.current_balance|currency_npr }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Expenses & COGS -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="px-5 py-3.5 bg-amber-50/70 border-b border-amber-100 flex items-center justify-between">
+                    <h2 class="text-sm font-bold text-amber-950 flex items-center gap-2">
+                        <span>📉</span>
+                        <span>5 & 6. {% trans "COGS & Expenses (लागत तथा खर्च)" %}</span>
+                    </h2>
+                </div>
+                <table class="table-base">
+                    <thead class="table-header">
+                        <tr>
+                            <th class="w-24">{% trans "Code" %}</th>
+                            <th>{% trans "Account Name" %}</th>
+                            <th class="text-right">{% trans "Balance (NPR)" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 text-xs">
+                        {% for a in grouped_accounts.EXPENSE %}
+                            <tr class="hover:bg-slate-50">
+                                <td class="table-cell font-mono font-bold">{{ a.account_number }}</td>
+                                <td class="table-cell">
+                                    <span class="font-semibold text-slate-900 block">{{ a.name_en }}</span>
+                                    <span class="text-slate-500 text-[11px]">{{ a.name_ne }}</span>
+                                </td>
+                                <td class="table-cell text-right font-mono font-bold text-amber-800">{{ a.current_balance|currency_npr }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

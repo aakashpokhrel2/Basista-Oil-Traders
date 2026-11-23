@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% load i18n nepali_tags %}
+
+{% block title %}{% trans "Client Credit Ledger & Statement" %} | {{ customer.name }}{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div class="flex items-center gap-3">
+            <a href="{% url 'customers:customer_list' %}" class="btn btn-secondary text-xs">
+                <span>←</span>
+                <span>{% trans "Customers" %}</span>
+            </a>
+            <div>
+                <h1 class="text-2xl font-bold text-slate-900">{{ customer.name }}</h1>
+                <p class="text-xs text-slate-500">
+                    {% trans "Phone" %}: {{ customer.phone }} &bull; {% trans "PAN/VAT" %}: {{ customer.pan_vat_number|default:"-" }}
+                </p>
+            </div>
+        </div>
+        <div class="flex items-center gap-2">
+            <a href="{% url 'customers:customer_payment' customer_id=customer.pk %}" class="btn btn-primary text-xs">
+                <span>💵</span>
+                <span>{% trans "Collect Credit Payment" %}</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Client Status Banner -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="stat-card border-l-4 border-l-amber-600">
+            <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">{% trans "Current Outstanding Credit" %}</span>
+            <p class="text-2xl font-black text-amber-900 mt-1 font-mono">{{ customer.current_balance|currency_npr }}</p>
+            <span class="text-xs text-slate-500 mt-1 block">{% trans "Total unpaid balance owed" %}</span>
+        </div>
+        <div class="stat-card border-l-4 border-l-blue-600">
+            <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">{% trans "Approved Credit Limit" %}</span>
+            <p class="text-xl font-bold text-slate-900 mt-1 font-mono">{{ customer.credit_limit|currency_npr }}</p>
+            <span class="text-xs text-slate-500 mt-1 block">{% trans "Available" %}: {{ customer.available_credit|currency_npr }}</span>
+        </div>
+        <div class="stat-card border-l-4 border-l-emerald-600">
+            <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">{% trans "Contact & Address" %}</span>
+            <p class="text-sm font-semibold text-slate-800 mt-1">{{ customer.contact_person|default:"Direct Office" }}</p>
+            <span class="text-xs text-slate-500 block truncate">{{ customer.address }}</span>
+        </div>
+    </div>
+
+    <!-- Credit Fuel Sales History -->
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="px-5 py-4 border-b border-slate-200 bg-slate-50/60">
+            <h2 class="text-sm font-bold text-slate-900">{% trans "Credit Fuel Dispense History" %}</h2>
+        </div>
+        <div class="p-0 overflow-x-auto">
+            <table class="table-base">
+                <thead class="table-header">
+                    <tr>
+                        <th>{% trans "Invoice #" %}</th>
+                        <th>{% trans "Date & Time" %}</th>
+                        <th>{% trans "Fuel" %}</th>
+                        <th>{% trans "Vehicle #" %}</th>
+                        <th class="text-right">{% trans "Quantity (L)" %}</th>
+                        <th class="text-right">{% trans "Rate (NPR)" %}</th>
+                        <th class="text-right">{% trans "Amount (NPR)" %}</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 text-xs">
+                    {% for s in credit_sales %}
+                        <tr>
+                            <td class="table-cell font-mono font-bold">
+                                <a href="{% url 'operations:sale_detail' pk=s.pk %}" class="text-emerald-700 hover:underline">
+                                    {{ s.invoice_number }}
+                                </a>
+                            </td>
+                            <td class="table-cell whitespace-nowrap">{{ s.transaction_date|date:"Y-m-d H:i" }}</td>
+                            <td class="table-cell font-bold">{{ s.fuel_type.code }}</td>
+                            <td class="table-cell font-mono">{{ s.vehicle_number|default:"-" }}</td>
+                            <td class="table-cell text-right font-mono">{{ s.quantity }} L</td>
+                            <td class="table-cell text-right font-mono">{{ s.unit_price|currency_npr }}</td>
+                            <td class="table-cell text-right font-mono font-bold text-slate-900">{{ s.total_amount|currency_npr }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="7" class="p-4 text-center text-slate-400">{% trans "No credit sales recorded." %}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Payments / Collections Received -->
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="px-5 py-4 border-b border-slate-200 bg-slate-50/60">
+            <h2 class="text-sm font-bold text-slate-900">{% trans "Payments & Repayments Received" %}</h2>
+        </div>
+        <div class="p-0 overflow-x-auto">
+            <table class="table-base">
+                <thead class="table-header">
+                    <tr>
+                        <th>{% trans "Receipt #" %}</th>
+                        <th>{% trans "Date (AD / BS)" %}</th>
+                        <th>{% trans "Method" %}</th>
+                        <th>{% trans "Reference #" %}</th>
+                        <th class="text-right">{% trans "Amount (NPR)" %}</th>
+                        <th>{% trans "Collected By" %}</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 text-xs">
+                    {% for cp in payments %}
+                        <tr>
+                            <td class="table-cell font-mono font-bold text-slate-900">{{ cp.receipt_number }}</td>
+                            <td class="table-cell whitespace-nowrap">
+                                <span>{{ cp.payment_date|date:"Y-m-d" }}</span>
+                                <span class="text-[11px] text-emerald-700 block">{{ cp.payment_date_bs }}</span>
+                            </td>
+                            <td class="table-cell">
+                                <span class="badge {% if cp.payment_method == 'CASH' %}badge-success{% else %}badge-info{% endif %}">
+                                    {{ cp.get_payment_method_display }}
+                                </span>
+                            </td>
+                            <td class="table-cell font-mono text-slate-700">{{ cp.reference_number|default:"-" }}</td>
+                            <td class="table-cell text-right font-mono font-bold text-emerald-800">{{ cp.amount|currency_npr }}</td>
+                            <td class="table-cell text-slate-600">{{ cp.recorded_by.get_full_name|default:cp.recorded_by.username }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="6" class="p-4 text-center text-slate-400">{% trans "No payment receipts recorded." %}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

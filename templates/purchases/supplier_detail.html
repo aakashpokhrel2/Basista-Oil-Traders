@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% load i18n nepali_tags %}
+
+{% block title %}{% trans "Supplier Profile & Ledger" %} | {{ supplier.name }}{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div class="flex items-center gap-3">
+            <a href="{% url 'purchases:supplier_list' %}" class="btn btn-secondary text-xs">
+                <span>←</span>
+                <span>{% trans "Suppliers" %}</span>
+            </a>
+            <div>
+                <h1 class="text-2xl font-bold text-slate-900">{{ supplier.name }}</h1>
+                <p class="text-xs text-slate-500">
+                    {% trans "PAN/VAT" %}: {{ supplier.pan_vat_number|default:"-" }} &bull; {% trans "Phone" %}: {{ supplier.phone }}
+                </p>
+            </div>
+        </div>
+        <div class="flex items-center gap-2">
+            <a href="{% url 'purchases:supplier_payment' supplier_id=supplier.pk %}" class="btn btn-primary text-xs">
+                <span>💸</span>
+                <span>{% trans "Record Payment to Supplier" %}</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Balance Banner -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="stat-card border-l-4 border-l-red-600">
+            <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">{% trans "Current Outstanding Payable" %}</span>
+            <p class="text-2xl font-black text-red-900 mt-1 font-mono">{{ supplier.current_balance|currency_npr }}</p>
+            <span class="text-xs text-slate-500 mt-1 block">{% trans "Total unpaid balance owed" %}</span>
+        </div>
+        <div class="stat-card border-l-4 border-l-blue-600">
+            <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">{% trans "Opening Payable" %}</span>
+            <p class="text-xl font-bold text-slate-900 mt-1 font-mono">{{ supplier.opening_payable_balance|currency_npr }}</p>
+        </div>
+        <div class="stat-card border-l-4 border-l-emerald-600">
+            <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">{% trans "Contact & Address" %}</span>
+            <p class="text-sm font-semibold text-slate-800 mt-1">{{ supplier.contact_person|default:"Direct Depot Office" }}</p>
+            <span class="text-xs text-slate-500 block truncate">{{ supplier.address }}</span>
+        </div>
+    </div>
+
+    <!-- Purchases History Table -->
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="px-5 py-4 border-b border-slate-200 bg-slate-50/60 flex items-center justify-between">
+            <h2 class="text-sm font-bold text-slate-900">{% trans "Recent Tanker Purchase Deliveries" %}</h2>
+            <a href="{% url 'purchases:purchase_create' %}" class="text-xs text-emerald-700 hover:underline font-semibold">
+                + {% trans "New Delivery" %}
+            </a>
+        </div>
+        <div class="p-0 overflow-x-auto">
+            <table class="table-base">
+                <thead class="table-header">
+                    <tr>
+                        <th>{% trans "Invoice #" %}</th>
+                        <th>{% trans "Date (AD / BS)" %}</th>
+                        <th>{% trans "Fuel" %}</th>
+                        <th>{% trans "Tank" %}</th>
+                        <th class="text-right">{% trans "Quantity (L)" %}</th>
+                        <th class="text-right">{% trans "Total (NPR)" %}</th>
+                        <th>{% trans "Status" %}</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 text-xs">
+                    {% for p in purchases %}
+                        <tr>
+                            <td class="table-cell font-mono font-bold">
+                                <a href="{% url 'purchases:purchase_detail' pk=p.pk %}" class="text-emerald-700 hover:underline">
+                                    {{ p.invoice_number }}
+                                </a>
+                            </td>
+                            <td class="table-cell whitespace-nowrap">
+                                <span>{{ p.purchase_date|date:"Y-m-d" }}</span>
+                                <span class="text-[11px] text-emerald-700 font-medium block">{{ p.purchase_date_bs }}</span>
+                            </td>
+                            <td class="table-cell font-bold">{{ p.fuel_type.code }}</td>
+                            <td class="table-cell text-slate-600">{{ p.receiving_tank.tank_name }}</td>
+                            <td class="table-cell text-right font-mono font-bold">{{ p.delivered_quantity }} L</td>
+                            <td class="table-cell text-right font-mono font-bold text-slate-900">{{ p.total_amount|currency_npr }}</td>
+                            <td class="table-cell">
+                                {% if p.approval_status == 'APPROVED' %}
+                                    <span class="badge badge-success">{% trans "APPROVED" %}</span>
+                                {% elif p.approval_status == 'PENDING' %}
+                                    <span class="badge badge-warning">{% trans "PENDING" %}</span>
+                                {% else %}
+                                    <span class="badge badge-danger">{{ p.approval_status }}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="7" class="p-4 text-center text-slate-400">{% trans "No fuel delivery invoices recorded yet." %}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Payments Made to Supplier Table -->
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="px-5 py-4 border-b border-slate-200 bg-slate-50/60">
+            <h2 class="text-sm font-bold text-slate-900">{% trans "Payment History to Supplier" %}</h2>
+        </div>
+        <div class="p-0 overflow-x-auto">
+            <table class="table-base">
+                <thead class="table-header">
+                    <tr>
+                        <th>{% trans "Payment #" %}</th>
+                        <th>{% trans "Date (AD / BS)" %}</th>
+                        <th>{% trans "Method" %}</th>
+                        <th>{% trans "Bank Ref / Cheque" %}</th>
+                        <th class="text-right">{% trans "Amount Paid (NPR)" %}</th>
+                        <th>{% trans "Recorded By" %}</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 text-xs">
+                    {% for py in payments %}
+                        <tr>
+                            <td class="table-cell font-mono font-bold text-slate-900">{{ py.payment_number }}</td>
+                            <td class="table-cell whitespace-nowrap">
+                                <span>{{ py.payment_date|date:"Y-m-d" }}</span>
+                                <span class="text-[11px] text-emerald-700 block">{{ py.payment_date_bs }}</span>
+                            </td>
+                            <td class="table-cell">
+                                <span class="badge {% if py.payment_method == 'CASH' %}badge-success{% else %}badge-info{% endif %}">
+                                    {{ py.get_payment_method_display }}
+                                </span>
+                            </td>
+                            <td class="table-cell font-mono text-slate-700">{{ py.payment_reference|default:"-" }}</td>
+                            <td class="table-cell text-right font-mono font-bold text-emerald-800">{{ py.amount|currency_npr }}</td>
+                            <td class="table-cell text-slate-600">{{ py.recorded_by.get_full_name|default:py.recorded_by.username }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="6" class="p-4 text-center text-slate-400">{% trans "No payments recorded for this supplier." %}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

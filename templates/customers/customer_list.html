@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% load i18n nepali_tags %}
+
+{% block title %}{% trans "Customer Credit Accounts" %} | {{ station_name }}{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900">{% trans "Customer Credit Management" %}</h1>
+            <p class="text-sm text-slate-500">
+                {% trans "Manage corporate fleet clients, transport cooperatives, credit limits, and debt recovery." %}
+            </p>
+        </div>
+        <div class="flex items-center gap-2">
+            <a href="{% url 'customers:customer_create' %}" class="btn btn-primary text-xs">
+                <span>➕</span>
+                <span>{% trans "Register Credit Client" %}</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Summary -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="stat-card border-l-4 border-l-amber-500">
+            <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">{% trans "Total Outstanding Credit" %}</span>
+            <p class="text-2xl font-black text-amber-900 mt-1 font-mono">{{ total_credit|currency_npr }}</p>
+            <span class="text-xs text-slate-500 mt-1 block">{% trans "Total unpaid credit owed by clients" %}</span>
+        </div>
+    </div>
+
+    <!-- Customers Table -->
+    <div class="table-container">
+        <table class="table-base">
+            <thead class="table-header">
+                <tr>
+                    <th scope="col">{% trans "Customer / Firm" %}</th>
+                    <th scope="col">{% trans "Contact Person" %}</th>
+                    <th scope="col">{% trans "Phone" %}</th>
+                    <th scope="col" class="text-right">{% trans "Credit Limit (NPR)" %}</th>
+                    <th scope="col" class="text-right">{% trans "Current Credit (NPR)" %}</th>
+                    <th scope="col">{% trans "Status" %}</th>
+                    <th scope="col" class="text-right">{% trans "Actions" %}</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                {% for c in customers %}
+                    <tr class="hover:bg-slate-50/80">
+                        <td class="table-cell">
+                            <a href="{% url 'customers:customer_detail' pk=c.pk %}" class="font-bold text-slate-900 hover:text-emerald-700">
+                                {{ c.name }}
+                            </a>
+                            {% if c.address %}<span class="text-[11px] text-slate-500 block">{{ c.address }}</span>{% endif %}
+                        </td>
+                        <td class="table-cell text-xs text-slate-700">{{ c.contact_person|default:"-" }}</td>
+                        <td class="table-cell text-xs font-mono text-slate-700">{{ c.phone }}</td>
+                        <td class="table-cell text-right font-mono text-xs text-slate-600">{{ c.credit_limit|currency_npr }}</td>
+                        <td class="table-cell text-right font-mono font-bold text-xs {% if c.current_balance > c.credit_limit %}text-red-700{% elif c.current_balance > 0 %}text-amber-700{% else %}text-emerald-700{% endif %}">
+                            {{ c.current_balance|currency_npr }}
+                        </td>
+                        <td class="table-cell">
+                            {% if c.status == 'ACTIVE' %}
+                                <span class="badge badge-success">{% trans "Active" %}</span>
+                            {% elif c.status == 'BLOCKED' %}
+                                <span class="badge badge-danger">{% trans "Blocked" %}</span>
+                            {% else %}
+                                <span class="badge badge-secondary">{{ c.get_status_display }}</span>
+                            {% endif %}
+                        </td>
+                        <td class="table-cell text-right">
+                            <div class="flex items-center justify-end gap-1.5">
+                                <a href="{% url 'customers:customer_payment' customer_id=c.pk %}" class="btn btn-secondary text-[11px] py-1 px-2.5">
+                                    <span>💵</span>
+                                    <span>{% trans "Collect" %}</span>
+                                </a>
+                                <a href="{% url 'customers:customer_detail' pk=c.pk %}" class="btn btn-secondary text-[11px] py-1 px-2">
+                                    {% trans "Ledger" %}
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="7" class="p-8 text-center text-slate-400">
+                            {% trans "No credit customers registered." %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

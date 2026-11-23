@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load i18n nepali_tags %}
+
+{% block title %}{% trans "Journal Voucher" %} {{ entry.entry_number }} | {{ station_name }}{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto space-y-6">
+    <div class="flex items-center justify-between gap-4">
+        <a href="{% url 'accounting:journal_list' %}" class="btn btn-secondary text-xs">
+            <span>←</span>
+            <span>{% trans "Back to Journal Register" %}</span>
+        </a>
+        <button onclick="window.print()" class="btn btn-secondary text-xs">
+            <span>🖨️</span>
+            <span>{% trans "Print Voucher" %}</span>
+        </button>
+    </div>
+
+    <!-- Voucher Container -->
+    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm p-8 space-y-6">
+        <div class="flex justify-between items-start border-b border-slate-200 pb-4">
+            <div>
+                <span class="badge {% if entry.is_reversed %}badge-danger{% else %}badge-success{% endif %} uppercase">
+                    {% if entry.is_reversed %}{% trans "REVERSED VOUCHER" %}{% else %}{% trans "POSTED GENERAL JOURNAL" %}{% endif %}
+                </span>
+                <h1 class="text-xl font-bold text-slate-900 mt-2 font-mono">{{ entry.entry_number }}</h1>
+                <p class="text-xs text-slate-500 mt-0.5">
+                    {% trans "Source" %}: <strong>{{ entry.reference_type|default:"Direct Journal" }} #{{ entry.reference_id|default:"-" }}</strong>
+                </p>
+            </div>
+            <div class="text-right">
+                <span class="text-xs text-slate-500 block">{% trans "Date (AD)" %}: {{ entry.date|date:"Y-m-d" }}</span>
+                <span class="text-xs text-emerald-700 font-semibold block">{% trans "Date (BS)" %}: {{ entry.date_bs }}</span>
+            </div>
+        </div>
+
+        <div>
+            <span class="text-xs font-bold text-slate-700 block mb-1">{% trans "Narration" %}:</span>
+            <p class="text-xs text-slate-800 bg-slate-50 p-3 rounded-xl border border-slate-200">{{ entry.description }}</p>
+        </div>
+
+        <!-- Double-entry lines table -->
+        <div>
+            <table class="table-base">
+                <thead class="table-header">
+                    <tr>
+                        <th>{% trans "Account Code & Name" %}</th>
+                        <th>{% trans "Line Description" %}</th>
+                        <th class="text-right">{% trans "Debit (NPR)" %}</th>
+                        <th class="text-right">{% trans "Credit (NPR)" %}</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 text-xs">
+                    {% for l in entry.lines.all %}
+                        <tr>
+                            <td class="table-cell">
+                                <span class="font-mono font-bold text-slate-800">{{ l.account.account_number }}</span>
+                                <span class="font-semibold text-slate-900 block">{{ l.account.name_en }}</span>
+                                <span class="text-[11px] text-slate-500">{{ l.account.name_ne }}</span>
+                            </td>
+                            <td class="table-cell text-slate-600">{{ l.description }}</td>
+                            <td class="table-cell text-right font-mono font-bold text-slate-900">
+                                {% if l.debit > 0 %}{{ l.debit|currency_npr }}{% else %}-{% endif %}
+                            </td>
+                            <td class="table-cell text-right font-mono font-bold text-slate-900">
+                                {% if l.credit > 0 %}{{ l.credit|currency_npr }}{% else %}-{% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr class="border-t-2 border-slate-300 bg-slate-50 font-mono font-bold text-xs text-slate-900">
+                        <td colspan="2" class="p-3 text-right uppercase">{% trans "Total Balanced" %}:</td>
+                        <td class="p-3 text-right text-emerald-800">{{ entry.total_amount|currency_npr }}</td>
+                        <td class="p-3 text-right text-emerald-800">{{ entry.total_amount|currency_npr }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div class="border-t border-slate-200 pt-4 flex justify-between text-xs text-slate-500">
+            <span>{% trans "Created By" %}: <strong>{{ entry.created_by.get_full_name|default:entry.created_by.username }}</strong></span>
+            <span>{% trans "Timestamp" %}: {{ entry.created_at|date:"Y-m-d H:i" }}</span>
+        </div>
+    </div>
+</div>
+{% endblock %}

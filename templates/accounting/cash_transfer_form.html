@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load i18n nepali_tags %}
+
+{% block title %}{{ title }} | {{ station_name }}{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto space-y-6">
+    <div class="flex items-center gap-3">
+        <a href="{% url 'accounting:cash_book' %}" class="btn btn-secondary text-xs">
+            <span>←</span>
+            <span>{% trans "Back to Cash Book" %}</span>
+        </a>
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900">{{ title }}</h1>
+            <p class="text-xs text-slate-500">{% trans "Transfer cash between station physical drawer and primary bank account." %}</p>
+        </div>
+    </div>
+
+    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+        <form method="POST" class="space-y-4">
+            {% csrf_token %}
+            <div>
+                <label class="form-label font-semibold">{{ form.transfer_type.label }} *</label>
+                {{ form.transfer_type }}
+            </div>
+            <div>
+                <label class="form-label font-semibold">{{ form.amount.label }} (NPR) *</label>
+                {{ form.amount }}
+            </div>
+            <div>
+                <label class="form-label font-semibold">{{ form.bank_reference.label }}</label>
+                {{ form.bank_reference }}
+            </div>
+            <div>
+                <label class="form-label font-semibold">{{ form.description.label }} *</label>
+                {{ form.description }}
+            </div>
+            <div class="pt-4 flex justify-end gap-3 border-t border-slate-200">
+                <a href="{% url 'accounting:cash_book' %}" class="btn btn-secondary text-xs">{% trans "Cancel" %}</a>
+                <button type="submit" class="btn btn-primary text-xs font-semibold px-4 py-2">
+                    🏦 {% trans "Execute Bank Cash Transfer" %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load i18n nepali_tags %}
+
+{% block title %}{% trans "Suppliers & Depots" %} | {{ station_name }}{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900">{% trans "Suppliers & Fuel Depots" %}</h1>
+            <p class="text-sm text-slate-500">
+                {% trans "Manage Nepal Oil Corporation (NOC) depots, lube suppliers, and payable balances." %}
+            </p>
+        </div>
+        <div class="flex items-center gap-2">
+            <a href="{% url 'purchases:supplier_create' %}" class="btn btn-primary text-xs">
+                <span>➕</span>
+                <span>{% trans "Register Supplier" %}</span>
+            </a>
+            <a href="{% url 'purchases:purchase_list' %}" class="btn btn-secondary text-xs">
+                <span>🛢️</span>
+                <span>{% trans "Purchase Register" %}</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Summary Card -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="stat-card border-l-4 border-l-red-500">
+            <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">{% trans "Total Outstanding Payables" %}</span>
+            <p class="text-2xl font-black text-red-900 mt-1 font-mono">{{ total_payable|currency_npr }}</p>
+            <span class="text-xs text-slate-500 mt-1 block">{% trans "Unpaid debt to fuel depots & vendors" %}</span>
+        </div>
+    </div>
+
+    <!-- Suppliers Table -->
+    <div class="table-container">
+        <table class="table-base">
+            <thead class="table-header">
+                <tr>
+                    <th scope="col">{% trans "Supplier / Depot" %}</th>
+                    <th scope="col">{% trans "Contact Person" %}</th>
+                    <th scope="col">{% trans "Phone" %}</th>
+                    <th scope="col">{% trans "PAN / VAT" %}</th>
+                    <th scope="col" class="text-right">{% trans "Current Payable (NPR)" %}</th>
+                    <th scope="col">{% trans "Status" %}</th>
+                    <th scope="col" class="text-right">{% trans "Actions" %}</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                {% for s in suppliers %}
+                    <tr class="hover:bg-slate-50/80">
+                        <td class="table-cell">
+                            <a href="{% url 'purchases:supplier_detail' pk=s.pk %}" class="font-bold text-slate-900 hover:text-emerald-700">
+                                {{ s.name }}
+                            </a>
+                            {% if s.address %}<span class="text-[11px] text-slate-500 block">{{ s.address }}</span>{% endif %}
+                        </td>
+                        <td class="table-cell text-xs text-slate-700">{{ s.contact_person|default:"-" }}</td>
+                        <td class="table-cell text-xs font-mono text-slate-700">{{ s.phone }}</td>
+                        <td class="table-cell text-xs font-mono text-slate-600">{{ s.pan_vat_number|default:"-" }}</td>
+                        <td class="table-cell text-right font-mono font-bold text-xs {% if s.current_balance > 0 %}text-red-700{% else %}text-emerald-700{% endif %}">
+                            {{ s.current_balance|currency_npr }}
+                        </td>
+                        <td class="table-cell">
+                            {% if s.status == 'ACTIVE' %}
+                                <span class="badge badge-success">{% trans "Active" %}</span>
+                            {% else %}
+                                <span class="badge badge-secondary">{{ s.get_status_display }}</span>
+                            {% endif %}
+                        </td>
+                        <td class="table-cell text-right">
+                            <div class="flex items-center justify-end gap-1.5">
+                                <a href="{% url 'purchases:supplier_payment' supplier_id=s.pk %}" class="btn btn-secondary text-[11px] py-1 px-2.5">
+                                    <span>💸</span>
+                                    <span>{% trans "Pay" %}</span>
+                                </a>
+                                <a href="{% url 'purchases:supplier_detail' pk=s.pk %}" class="btn btn-secondary text-[11px] py-1 px-2">
+                                    {% trans "View" %}
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="7" class="p-8 text-center text-slate-400">
+                            {% trans "No suppliers registered. Add Nepal Oil Corporation (NOC) or other depots." %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
