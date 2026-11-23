@@ -1,0 +1,121 @@
+{% load i18n nepali_tags %}
+
+<header class="bg-white border-b border-slate-200 sticky top-0 z-20">
+    <div class="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
+        <!-- Left: Mobile Menu Toggle & Station Identity -->
+        <div class="flex items-center gap-3">
+            <button id="mobile-menu-toggle" type="button" class="lg:hidden p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+
+            <!-- Station Logo and Name -->
+            <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-lg bg-emerald-700 flex items-center justify-center text-white shadow-sm font-bold text-lg">
+                    ⛽
+                </div>
+                <div class="hidden sm:block">
+                    <h1 class="text-base font-bold text-slate-900 leading-tight">{{ station_name }}</h1>
+                    <p class="text-xs text-emerald-700 font-medium">{% trans "Nepal Petrol Station Management" %}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center: Dual Gregorian (AD) & Bikram Sambat (BS) Date Display -->
+        <div class="hidden md:flex items-center gap-2 bg-emerald-50/80 border border-emerald-200/80 rounded-full px-4 py-1.5 shadow-sm text-xs">
+            <div class="flex items-center gap-1.5 font-semibold text-emerald-900">
+                <span class="inline-block w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
+                <span>📅 BS:</span>
+                <span class="text-emerald-800">
+                    {% if active_language == 'ne' %}{{ date_bs_formatted_ne }}{% else %}{{ date_bs_formatted_en }}{% endif %}
+                </span>
+            </div>
+            <span class="text-emerald-300">|</span>
+            <div class="text-slate-600 font-medium">
+                <span>AD: {{ date_ad_formatted_en }}</span>
+            </div>
+        </div>
+
+        <!-- Right: Language Switcher, User Dropdown -->
+        <div class="flex items-center gap-3">
+            <!-- Language Switcher Dropdown -->
+            <div class="relative">
+                <button id="language-dropdown-button" type="button" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-700 hover:bg-slate-50 shadow-sm transition">
+                    <span class="text-sm">🌐</span>
+                    <span>{% if active_language == 'ne' %}नेपाली{% else %}English{% endif %}</span>
+                    <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+
+                <!-- Language Dropdown Menu -->
+                <div id="language-dropdown" class="hidden absolute right-0 mt-2 w-44 rounded-lg bg-white shadow-lg border border-slate-200 py-1.5 z-50">
+                    <form action="{% url 'common:switch_language' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                        <button type="submit" name="language" value="en" class="w-full text-left px-3.5 py-2 text-xs text-slate-700 hover:bg-emerald-50 hover:text-emerald-800 flex items-center justify-between {% if active_language == 'en' %}font-bold text-emerald-800 bg-emerald-50/50{% endif %}">
+                            <span>English</span>
+                            {% if active_language == 'en' %}<span class="text-emerald-600">✓</span>{% endif %}
+                        </button>
+                        <button type="submit" name="language" value="ne" class="w-full text-left px-3.5 py-2 text-xs text-slate-700 hover:bg-emerald-50 hover:text-emerald-800 flex items-center justify-between {% if active_language == 'ne' %}font-bold text-emerald-800 bg-emerald-50/50{% endif %}">
+                            <span class="font-devanagari">नेपाली (Nepali)</span>
+                            {% if active_language == 'ne' %}<span class="text-emerald-600">✓</span>{% endif %}
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- User Menu Dropdown -->
+            <div class="relative">
+                <button id="user-menu-button" type="button" class="flex items-center gap-2.5 p-1.5 rounded-lg hover:bg-slate-100 transition focus:outline-none">
+                    <div class="w-8 h-8 rounded-full bg-emerald-800 text-white flex items-center justify-center font-semibold text-sm">
+                        {{ user.username|slice:":1"|upper }}
+                    </div>
+                    <div class="hidden sm:block text-left">
+                        <p class="text-xs font-semibold text-slate-800 leading-tight">{{ user.get_full_name|default:user.username }}</p>
+                        <span class="badge {{ user.role|role_badge_class }} text-[10px] py-0 px-1.5">
+                            {{ user.get_role_display }}
+                        </span>
+                    </div>
+                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+
+                <!-- Dropdown items -->
+                <div id="user-menu-dropdown" class="hidden absolute right-0 mt-2 w-56 rounded-lg bg-white shadow-lg border border-slate-200 py-1.5 z-50">
+                    <div class="px-3.5 py-2 border-b border-slate-100">
+                        <p class="text-xs font-semibold text-slate-900">{{ user.get_full_name|default:user.username }}</p>
+                        <p class="text-[11px] text-slate-500 truncate">{{ user.email|default:user.employee_id|default:user.role }}</p>
+                    </div>
+
+                    <a href="{% url 'authentication:profile' %}" class="block px-3.5 py-2 text-xs text-slate-700 hover:bg-slate-50 hover:text-emerald-700">
+                        👤 {% trans "My Profile & Settings" %}
+                    </a>
+                    <a href="{% url 'authentication:password_change' %}" class="block px-3.5 py-2 text-xs text-slate-700 hover:bg-slate-50 hover:text-emerald-700">
+                        🔑 {% trans "Change Password" %}
+                    </a>
+
+                    {% if user.is_owner or user.is_manager %}
+                        <div class="border-t border-slate-100 my-1"></div>
+                        <a href="{% url 'authentication:user_list' %}" class="block px-3.5 py-2 text-xs text-slate-700 hover:bg-slate-50 hover:text-emerald-700">
+                            👥 {% trans "Staff & User Management" %}
+                        </a>
+                    {% endif %}
+
+                    <div class="border-t border-slate-100 my-1"></div>
+                    <a href="{% url 'authentication:logout' %}" class="block px-3.5 py-2 text-xs text-red-600 hover:bg-red-50 font-medium">
+                        🚪 {% trans "Log Out" %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Date Pill (shown only on small screens) -->
+    <div class="md:hidden bg-emerald-50 px-4 py-1.5 border-t border-emerald-100 text-xs flex justify-between items-center text-emerald-900">
+        <span class="font-medium">📅 BS: {% if active_language == 'ne' %}{{ date_bs_formatted_ne }}{% else %}{{ date_bs_formatted_en }}{% endif %}</span>
+        <span class="text-slate-500 font-mono text-[11px]">{{ current_ad_date }}</span>
+    </div>
+</header>

@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% load i18n nepali_tags %}
+
+{% block title %}{% trans "Staff & User Management" %} | {{ station_name }}{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Page Header & Action -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900">{% trans "Staff & User Management" %}</h1>
+            <p class="text-sm text-slate-500">
+                {% trans "Manage petrol station employees, assigned roles, and access credentials." %}
+            </p>
+        </div>
+        <div>
+            <a href="{% url 'authentication:user_create' %}" class="btn btn-primary">
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg>
+                {% trans "Add New Staff Member" %}
+            </a>
+        </div>
+    </div>
+
+    <!-- Filters & Search Bar -->
+    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+        <form method="GET" class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+            <div class="sm:col-span-2">
+                <label class="sr-only">{% trans "Search" %}</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                        🔍
+                    </div>
+                    <input type="text" name="q" value="{{ q }}" placeholder="{% trans 'Search by name, username, employee ID, phone...' %}" class="form-input pl-9 text-xs">
+                </div>
+            </div>
+
+            <div>
+                <select name="role" class="form-select text-xs">
+                    <option value="">{% trans "All Roles" %}</option>
+                    <option value="OWNER" {% if selected_role == 'OWNER' %}selected{% endif %}>{% trans "Owner / Administrator" %}</option>
+                    <option value="MANAGER" {% if selected_role == 'MANAGER' %}selected{% endif %}>{% trans "Manager" %}</option>
+                    <option value="ACCOUNTANT" {% if selected_role == 'ACCOUNTANT' %}selected{% endif %}>{% trans "Accountant" %}</option>
+                    <option value="CASHIER" {% if selected_role == 'CASHIER' %}selected{% endif %}>{% trans "Cashier" %}</option>
+                    <option value="PUMP_OPERATOR" {% if selected_role == 'PUMP_OPERATOR' %}selected{% endif %}>{% trans "Pump Operator" %}</option>
+                </select>
+            </div>
+
+            <div class="flex gap-2">
+                <select name="status" class="form-select text-xs flex-1">
+                    <option value="">{% trans "All Statuses" %}</option>
+                    <option value="active" {% if selected_status == 'active' %}selected{% endif %}>{% trans "Active Only" %}</option>
+                    <option value="inactive" {% if selected_status == 'inactive' %}selected{% endif %}>{% trans "Inactive Only" %}</option>
+                </select>
+                <button type="submit" class="btn btn-secondary text-xs px-3">
+                    {% trans "Filter" %}
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Staff Table -->
+    <div class="table-container">
+        <table class="table-base">
+            <thead class="table-header">
+                <tr>
+                    <th scope="col">{% trans "Employee / Username" %}</th>
+                    <th scope="col">{% trans "Full Name" %}</th>
+                    <th scope="col">{% trans "Role" %}</th>
+                    <th scope="col">{% trans "Phone" %}</th>
+                    <th scope="col">{% trans "Language" %}</th>
+                    <th scope="col">{% trans "Status" %}</th>
+                    <th scope="col" class="text-right">{% trans "Actions" %}</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                {% for staff_user in users %}
+                    <tr class="table-row">
+                        <td class="table-cell">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-8 h-8 rounded-full bg-emerald-800 text-white flex items-center justify-center font-bold text-xs">
+                                    {{ staff_user.username|slice:":1"|upper }}
+                                </div>
+                                <div>
+                                    <span class="font-semibold text-slate-900 block">{{ staff_user.username }}</span>
+                                    {% if staff_user.employee_id %}
+                                        <span class="text-[11px] text-slate-500 font-mono">{{ staff_user.employee_id }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </td>
+                        <td class="table-cell font-medium text-slate-800">
+                            {{ staff_user.get_full_name|default:"-" }}
+                        </td>
+                        <td class="table-cell">
+                            <span class="badge {{ staff_user.role|role_badge_class }}">
+                                {{ staff_user.get_role_display }}
+                            </span>
+                        </td>
+                        <td class="table-cell text-slate-600 font-mono text-xs">
+                            {{ staff_user.phone_number|default:"-" }}
+                        </td>
+                        <td class="table-cell text-slate-600 text-xs">
+                            {% if staff_user.language_preference == 'ne' %}
+                                <span class="font-devanagari">नेपाली</span>
+                            {% else %}
+                                <span>English</span>
+                            {% endif %}
+                        </td>
+                        <td class="table-cell">
+                            {% if staff_user.is_active %}
+                                <span class="badge badge-success text-[11px]">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span>
+                                    {% trans "Active" %}
+                                </span>
+                            {% else %}
+                                <span class="badge badge-danger text-[11px]">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-red-500 mr-1.5"></span>
+                                    {% trans "Inactive" %}
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="table-cell text-right space-x-1.5">
+                            <a href="{% url 'authentication:user_edit' staff_user.pk %}" class="btn btn-secondary btn-sm" title="{% trans 'Edit Staff' %}">
+                                ✏️ {% trans "Edit" %}
+                            </a>
+
+                            {% if user.is_owner and staff_user != user %}
+                                <a href="{% url 'authentication:user_toggle_status' staff_user.pk %}" class="btn {% if staff_user.is_active %}btn-secondary text-amber-700 hover:bg-amber-50{% else %}btn-secondary text-emerald-700 hover:bg-emerald-50{% endif %} btn-sm">
+                                    {% if staff_user.is_active %}{% trans "Deactivate" %}{% else %}{% trans "Activate" %}{% endif %}
+                                </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="7" class="py-8 text-center text-slate-500 text-sm">
+                            {% trans "No staff members found matching your search criteria." %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

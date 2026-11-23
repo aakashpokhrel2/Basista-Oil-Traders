@@ -1,0 +1,35 @@
+{% if messages %}
+    <div class="space-y-2 mb-4">
+        {% for message in messages %}
+            <div class="alert-box flex items-center justify-between p-3.5 rounded-lg border text-sm transition-opacity duration-200 shadow-sm
+                {% if message.tags == 'error' %}
+                    bg-red-50 border-red-200 text-red-800
+                {% elif message.tags == 'success' %}
+                    bg-emerald-50 border-emerald-200 text-emerald-900
+                {% elif message.tags == 'warning' %}
+                    bg-amber-50 border-amber-200 text-amber-800
+                {% else %}
+                    bg-blue-50 border-blue-200 text-blue-800
+                {% endif %}">
+                <div class="flex items-center gap-2.5">
+                    {% if message.tags == 'error' %}
+                        <span class="text-base">❌</span>
+                    {% elif message.tags == 'success' %}
+                        <span class="text-base">✅</span>
+                    {% elif message.tags == 'warning' %}
+                        <span class="text-base">⚠️</span>
+                    {% else %}
+                        <span class="text-base">ℹ️</span>
+                    {% endif %}
+                    <span class="font-medium">{{ message }}</span>
+                </div>
+                <button type="button" data-dismiss="alert" class="text-slate-400 hover:text-slate-700 p-1 rounded-md transition">
+                    <span class="sr-only">Dismiss</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
